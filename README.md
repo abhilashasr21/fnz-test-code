@@ -1,6 +1,5 @@
 # Deployed Code Information
 
-
 ## Subscription Vending
 
 Folder Conatines a code for the Subscription Vending.

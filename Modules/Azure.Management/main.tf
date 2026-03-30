@@ -4,7 +4,7 @@
 #   parent_management_group_id = each.value.parent_id != null ? each.value.parent_id : null
 # }
 
-resource "azurerm_management_group" "management_group_parent" {
+resource "azurerm_management_group" "management_group" {
   display_name = var.display_name
   parent_management_group_id = var.parent_management_group_id != null ? var.parent_management_group_id : null
 }

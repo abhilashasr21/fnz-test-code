@@ -6,7 +6,7 @@
 
 resource "azurerm_management_group" "management_group" {
   display_name = var.display_name
-  parent_management_group_id = var.parent_management_group_id != null ? var.parent_management_group_id : null
+  parent_management_group_id = var.parent_management_group_id != null ? "/providers/Microsoft.Management/managementGroups/${var.parent_management_group_id}" : null
 }
 
 

@@ -54,3 +54,6 @@ jobs:
     # Adding terraform validate to check the syntax of the terraform files
       - name: Terraform Validate
         run: terraform validate
+    # Adding terraform plan to check the syntax of the terraform files
+      - name: Terraform Plan
+        run: terraform Plan -out=tfplan

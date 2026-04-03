@@ -29,10 +29,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
     # Login to Azure with the OIDC token and set the subscription context
       - name: Login to Azure using OIDC
         uses: azure/login@v2
@@ -48,12 +44,12 @@ jobs:
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-#      with:
-#        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
-        run: terraform init
+        run: |
+          cd '.\Code Vending\'
+          terraform init
 
     # Adding terraform validate to check the syntax of the terraform files
       - name: Terraform Validate

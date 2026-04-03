@@ -1,6 +1,10 @@
 # Deployed Code Information
 
-## Subscription Vending
+## .github
+
+Folder contains the Github Workflow
+
+## Code Vending
 
 Folder Conatines a code for the Subscription Vending.
 

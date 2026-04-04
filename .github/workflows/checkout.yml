@@ -60,6 +60,7 @@ jobs:
     name: Powershell Code
     runs-on: windows-latest
     needs: build
+    environment: Prod
 
     steps:
       

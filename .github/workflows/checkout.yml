@@ -59,6 +59,7 @@ jobs:
   powershell:
     name: Powershell Code
     runs-on: windows-latest
+    needs: build
 
     steps:
       
@@ -67,4 +68,3 @@ jobs:
       - name: Run PowerShell Script
         shell: pwsh
         run: Write-Host "Hello from PowerShell"
-        

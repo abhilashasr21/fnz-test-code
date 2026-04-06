@@ -84,7 +84,7 @@ jobs:
     name: Terraform Apply
     runs-on: windows-latest
     needs: tfLint
-    environment: Prod
+    # environment: Prod
 
     steps:
       

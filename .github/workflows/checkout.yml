@@ -61,7 +61,7 @@ jobs:
     name: Terraform Lint
     runs-on: windows-latest
     needs: build
-    environment: Prod
+    # environment: Prod
     defaults:
       run:
         working-directory: '.\Code Vending\'

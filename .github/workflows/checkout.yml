@@ -82,7 +82,7 @@ jobs:
   StorageAccount:
     name: Storage Account
     runs-on: windows-latest
-    needs: tfLint
+      # needs: tfLint
     # environment: Prod
 
     steps:

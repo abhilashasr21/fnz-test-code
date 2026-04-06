@@ -73,6 +73,11 @@ jobs:
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v1
 
+      - name: Initialize TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint -f compact
   # powershell:
   #   name: Create Storage account
   #   runs-on: windows-latest

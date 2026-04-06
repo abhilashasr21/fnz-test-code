@@ -2,12 +2,12 @@
 #                        Management Group                        #
 #****************************************************************#
 
-module "management_group_parent" {
-  source                     = "./Modules/Azure.Management"
-  for_each                   = var.management_group
-  display_name               = each.value.display_name
-  parent_management_group_id = each.value.parent_management_group_id == null ? null : tostring(each.value.parent_management_group_id)
-}
+# module "management_group_parent" {
+#   source                     = "./Modules/Azure.Management"
+#   for_each                   = var.management_group
+#   display_name               = each.value.display_name
+#   parent_management_group_id = each.value.parent_management_group_id == null ? null : tostring(each.value.parent_management_group_id)
+# }
 
 # module "management_group_child" {
 #   source                     = "./Modules/Azure.Management"
@@ -40,3 +40,12 @@ module "management_group_parent" {
 #****************************************************************#
 #                        Role Assignment                         #
 #****************************************************************#
+
+#****************************************************************#
+#                         Resource Group                         #
+#****************************************************************#
+
+resource "azurerm_resource_group" "rg1" {
+  name     = "RG-FNZ-001"
+  location = "uksouth"
+}

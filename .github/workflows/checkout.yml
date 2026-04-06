@@ -101,6 +101,5 @@ jobs:
           # Create container using Azure AD auth (OIDC login)
           az storage container create `
             --name $ct `
-            --account-name $st `
-            --auth-mode login
+            --account-name $st
 

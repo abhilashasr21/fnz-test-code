@@ -52,54 +52,46 @@ jobs:
     # Adding terraform validate to check the syntax of the terraform files
       - name: Terraform Validate
         run: terraform validate
+        
     # Adding terraform plan to check the syntax of the terraform files
       - name: Terraform Plan
         run: terraform Plan -out=tfplan
 
-  powershell:
-    name: Create Storage account
+  tfLint:
+    name: Terraform Lint
     runs-on: windows-latest
     needs: build
     environment: Prod
+    defaults:
+      run:
+        working-directory: '.\Code Vending\'
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v1
+
+  # powershell:
+  #   name: Create Storage account
+  #   runs-on: windows-latest
+  #   needs: build
+  #   environment: Prod
+
+  #   steps:
       
-      - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v4
 
-      # Run Powershell Script       
-      - name: Run PowerShell Script
-        shell: pwsh
-        run: Write-Host "Hello from PowerShell"
+  #     # Run Powershell Script       
+  #     - name: Run PowerShell Script
+  #       shell: pwsh
+  #       run: Write-Host "Hello from PowerShell"
 
-      # Login to Azure with the OIDC token and set the subscription context
-      - name: Login to Azure using OIDC
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      # Create the storage account
-      - name: Create Storage Account
-        shell: pwsh
-        run: |
-          $rg  = "rg-threadservice-tfstate"
-          $loc = "eastus2"
-          $st  = "stthreadtfstate"   # must be globally unique in Azure
-          $ct  = "tfstate"
-
-          az group create --name $rg --location $loc
-
-          az storage account create `
-            --name $st `
-            --resource-group $rg `
-            --location $loc `
-            --sku Standard_LRS `
-            --kind StorageV2 `
-            --min-tls-version TLS1_2
-
-          # Create container using Azure AD auth (OIDC login)
-          az storage container create `
-            --name $ct `
-            --account-name $st
-
+  #     # Login to Azure with the OIDC token and set the subscription context
+  #     - name: Login to Azure using OIDC
+  #       uses: azure/login@v2
+  #       with:
+  #         client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  #         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

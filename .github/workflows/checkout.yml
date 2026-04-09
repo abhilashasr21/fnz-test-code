@@ -102,8 +102,8 @@ jobs:
     name: Terraform Apply
     runs-on: windows-latest
     needs:
-      - tfLint
       - StorageAccount
+      - tfLint
     # environment: Prod
 
     steps:

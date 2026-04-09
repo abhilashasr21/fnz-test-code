@@ -96,9 +96,7 @@ jobs:
       - name: Check if Storage Account exists
         shell: pwsh
         #Run a PowerShell script to check if the storage account exists and create it if it doesn't
-        run: |
-          cd '.\Code Vending\'
-          ls     
+        run: ls
 
   # TerraformApply:
   #   name: Terraform Apply

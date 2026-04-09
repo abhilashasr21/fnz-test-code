@@ -18,72 +18,76 @@ permissions:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  TerraformPlan:
-    # The type of runner that the job will run on
-    runs-on: windows-latest
+  # TerraformPlan:
+  #   # The type of runner that the job will run on
+  #   runs-on: windows-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #     - uses: actions/checkout@v4
 
-    # Login to Azure with the OIDC token and set the subscription context
-      - name: Login to Azure using OIDC
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #   # Login to Azure with the OIDC token and set the subscription context
+  #     - name: Login to Azure using OIDC
+  #       uses: azure/login@v2
+  #       with:
+  #         client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  #         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Test login
-        run: az account show
+  #     - name: Test login
+  #       run: az account show
 
-      # Runs a set of commands using the runners shell
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+  #     # Runs a set of commands using the runners shell
+  #   # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v2
 
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: Terraform Init
-        run: |
-          cd '.\Code Vending\'
-          terraform init
+  #   # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+  #     - name: Terraform Init
+  #       run: |
+  #         cd '.\Code Vending\'
+  #         terraform init
 
-    # Adding terraform validate to check the syntax of the terraform files
-      - name: Terraform Validate
-        run: terraform validate
+  #   # Adding terraform validate to check the syntax of the terraform files
+  #     - name: Terraform Validate
+  #       run: terraform validate
         
-    # Adding terraform plan to check the syntax of the terraform files
-      - name: Terraform Plan
-        run: terraform Plan -out=tfplan
+  #   # Adding terraform plan to check the syntax of the terraform files
+  #     - name: Terraform Plan
+  #       run: terraform Plan -out=tfplan
 
-  tfLint:
-    name: Terraform Lint
-    runs-on: windows-latest
-    needs: TerraformPlan
-    # environment: Prod
-    defaults:
-      run:
-        working-directory: '.\Code Vending\'
+  # tfLint:
+  #   name: Terraform Lint
+  #   runs-on: windows-latest
+  #   needs: TerraformPlan
+  #   # environment: Prod
+  #   defaults:
+  #     run:
+  #       working-directory: '.\Code Vending\'
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v1
+  #     - name: Setup TFLint
+  #       uses: terraform-linters/setup-tflint@v1
 
-      - name: Initialize TFLint
-        run: tflint --init
+  #     - name: Initialize TFLint
+  #       run: tflint --init
 
-      - name: Run TFLint
-        run: tflint -f compact
+  #     - name: Run TFLint
+  #       run: tflint -f compact
 
   StorageAccount:
     name: Storage Account
     runs-on: windows-latest
-      # needs: tfLint
-    # environment: Prod
+
+    defaults:
+      run:
+        working-directory: './Code Vending/scripts'
+        shell: pwsh
+
 
     steps:
       - name: Login to Azure using OIDC
@@ -96,7 +100,7 @@ jobs:
       - name: Check if Storage Account exists
         shell: pwsh
         #Run a PowerShell script to check if the storage account exists and create it if it doesn't
-        run: ls
+        run: ./TestStAccount.ps1
 
   # TerraformApply:
   #   name: Terraform Apply

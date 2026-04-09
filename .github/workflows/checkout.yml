@@ -98,7 +98,6 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Check if Storage Account exists
-        shell: pwsh
         #Run a PowerShell script to check if the storage account exists and create it if it doesn't
         run: ./TestStAccount.ps1
 

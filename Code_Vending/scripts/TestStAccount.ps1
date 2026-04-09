@@ -4,6 +4,7 @@ $location = "eastus2"
 $storageAccountName = "mystorageaccount0612tf"
 $subscriptionId = "5a395407-07f8-47a9-b8bf-92c05227486c"  # Replace with your Azure subscription ID
 
+Connect-AzAccount
 #set the subscription context if needed
 Select-AzSubscription -SubscriptionId $subscriptionId
 

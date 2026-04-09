@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: ./Code_Vending/Scripts
+        working-directory: .\Code_Vending\Scripts
         shell: pwsh
     steps:
       - name: AzureLogin

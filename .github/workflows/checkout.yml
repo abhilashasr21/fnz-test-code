@@ -85,7 +85,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: './Code Vending/scripts'
+        working-directory: ./Code_Vending/scripts
         shell: pwsh
 
 

@@ -27,6 +27,6 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd '.\Code Vending\'
+          cd '.\Code_Vending\'
           terraform init
           terraform plan -out=tfplan

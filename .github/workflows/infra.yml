@@ -21,3 +21,11 @@ jobs:
       - name: Do infra stuff
         run: |
           echo "Infra folder changed - running workflow"
+
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: |
+          terraform init
+          terraform plan -out=tfplan

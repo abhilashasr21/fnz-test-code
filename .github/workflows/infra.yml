@@ -14,11 +14,14 @@ on:
       - '.github/workflows/infra.yml'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  terraform:
+    runs-on: windows-latest
+    defaults:
+        run:
+            working-directory: Code_Vending
     steps:
       - uses: actions/checkout@v4
-      - name: Do infra stuff
+      - name: Checkout the folder
         run: |
           echo "Infra folder changed - running workflow"
 
@@ -27,6 +30,5 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd '.\Code_Vending\'
           terraform init
           terraform plan -out=tfplan

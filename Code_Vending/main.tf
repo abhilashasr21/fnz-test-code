@@ -51,5 +51,6 @@ resource "azurerm_resource_group" "rg1" {
   tags = {
     "Environment" = "Test"
     "Deployment"  = "IaC"
+    "Backend"     = "Terraform"
   }
 }

@@ -21,7 +21,7 @@ terraform {
     hostname     = "fnztrial.jfrog.io"
     organization = "backend-bu001"
     workspaces {
-      prefix = "npr"    
+      prefix = "npr"
     }
   }
 

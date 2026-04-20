@@ -8,13 +8,23 @@ terraform {
       version = ">= 3.80.0, < 4.0.0"
     }
   }
-  
-  backend "azurerm" {
-    resource_group_name  = "rg-threadservice-tfstate"
-    storage_account_name = "stthreadtfstate"
-    container_name       = "tfstate"
-    key                  = "codeVending.tfstate"
+
+  # backend "azurerm" {
+  #   resource_group_name  = "rg-threadservice-tfstate"
+  #   storage_account_name = "stthreadtfstate"
+  #   container_name       = "tfstate"
+  #   key                  = "tf.state.latest.json"
+  # }
+
+
+  backend "remote" {
+    hostname     = "fnztrial.jfrog.io"
+    organization = "backend-bu001"
+    workspaces {
+      prefix = "npr"    
+    }
   }
+
 
 }
 

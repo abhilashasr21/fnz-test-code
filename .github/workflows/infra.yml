@@ -1,0 +1,23 @@
+name: Infra CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Code_Vending/**'
+      # Optional: also run when workflow itself changes
+      - '.github/workflows/infra.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Code_Vending/**'
+      - '.github/workflows/infra.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Do infra stuff
+        run: |
+          echo "Infra folder changed - running workflow"

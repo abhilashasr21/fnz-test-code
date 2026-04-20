@@ -49,7 +49,7 @@ resource "azurerm_resource_group" "rg1" {
   name     = "RG-FNZ-003"
   location = "uksouth"
   tags = {
-    "Environment" = "Dev"
+    "Environment" = "Test"
     "Deployment"  = "IaC"
   }
 }

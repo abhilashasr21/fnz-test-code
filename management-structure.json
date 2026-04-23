@@ -1,0 +1,146 @@
+{
+  "management_groups": [
+    {
+      "name": "mg10001",
+      "display_name": "Fnz Intermediate Prod",
+      "children": [
+        {
+          "name": "mg10002",
+          "display_name": "APAC - Prod",
+          "children": []
+        },
+        {
+          "name": "mg10003",
+          "display_name": "Americas - Prod",
+          "children": [
+            {
+              "name": "mg10004",
+              "display_name": "Americas Platform - Prod",
+              "children": [
+                {
+                  "name": "mg10005",
+                  "display_name": "Platform - Prod",
+                  "subscriptions": ["Prod Subscriptions - Client Hub"],
+                  "children": []
+                },
+                {
+                  "name": "mg10006",
+                  "display_name": "Management - Prod",
+                  "subscriptions": ["Prod Subscriptions - Client Hub"],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "mg10007",
+              "display_name": "Americas - Workloads - Prod",
+              "children": [
+                {
+                  "name": "mg10008",
+                  "display_name": "Canada - Prod",
+                  "subscriptions": ["Prod Subscriptions - Application"],
+                  "children": []
+                },
+                {
+                  "name": "mg10009",
+                  "display_name": "USA - Prod",
+                  "subscriptions": ["Prod Subscriptions - Application"],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "mg10010",
+          "display_name": "Security",
+          "subscriptions": ["Security Subscriptions"],
+          "children": []
+        },
+        {
+          "name": "mg10011",
+          "display_name": "Decommissioned",
+          "subscriptions": ["Decommissioned Subscriptions"],
+          "children": []
+        },
+        {
+          "name": "mg10012",
+          "display_name": "Sandbox",
+          "subscriptions": ["Sandbox Subscriptions"],
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "mg00001",
+      "display_name": "Fnz Intermediate Non-Prod",
+      "children": [
+        {
+          "name": "mg00002",
+          "display_name": "APAC - Non-Prod",
+          "children": []
+        },
+        {
+          "name": "mg00003",
+          "display_name": "Americas - Non-Prod",
+          "children": [
+            {
+              "name": "mg00004",
+              "display_name": "Americas Platform - Non-Prod",
+              "children": [
+                {
+                  "name": "mg00005",
+                  "display_name": "Platform - Non-Prod",
+                  "subscriptions": ["Non-Prod Subscriptions - Client Hub"],
+                  "children": []
+                },
+                {
+                  "name": "mg00006",
+                  "display_name": "Management - Non-Prod",
+                  "subscriptions": ["Prod Subscriptions - Client Hub"],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "mg00007",
+              "display_name": "Americas - Workloads - Non-Prod",
+              "children": [
+                {
+                  "name": "mg00008",
+                  "display_name": "Canada - Non-Prod",
+                  "subscriptions": ["Prod Subscriptions - Application"],
+                  "children": []
+                },
+                {
+                  "name": "mg00009",
+                  "display_name": "USA - Non-Prod",
+                  "subscriptions": ["Prod Subscriptions - Application"],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "mg00010",
+          "display_name": "Security - Non-Prod",
+          "subscriptions": ["Security Subscriptions"],
+          "children": []
+        },
+        {
+          "name": "mg00011",
+          "display_name": "Decommissioned",
+          "subscriptions": ["Decommissioned Subscriptions"],
+          "children": []
+        },
+        {
+          "name": "mg00012",
+          "display_name": "Sandbox",
+          "subscriptions": ["Sandbox Subscriptions"],
+          "children": []
+        }
+      ]
+    }
+  ]
+}

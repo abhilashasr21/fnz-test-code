@@ -9,19 +9,11 @@ terraform {
     }
   }
 
-  # backend "azurerm" {
-  #   resource_group_name  = "rg-threadservice-tfstate"
-  #   storage_account_name = "stthreadtfstate"
-  #   container_name       = "tfstate"
-  #   key                  = "tf.state.latest.json"
-  # }
-
-
   backend "remote" {
     hostname     = "fnztrial.jfrog.io"
     organization = "bu001"
     workspaces {
-      prefix = "npr"
+      name = "mgmt"
     }
   }
 

@@ -59,3 +59,9 @@ module "pep01" {
     azurerm_application_security_group.asg01
   ]
 }
+
+module "pdz" {
+  source = "./Module/Private DNS Zone"
+  domain_name                   = "privatelink.vaultcore.azure.net"
+  resource_group_name           = azurerm_resource_group.test.name
+}

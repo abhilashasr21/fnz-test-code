@@ -67,44 +67,44 @@ variable "diagnostic_settings" {
   }))
   default     = {}
   description = <<DESCRIPTION
-A map of diagnostic settings to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+  A map of diagnostic settings to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
-- `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
-- `log_categories` - (Optional) A set of log categories to send to the log analytics workspace. Defaults to `[]`.
-- `log_groups` - (Optional) A set of log groups to send to the log analytics workspace. Defaults to `["allLogs"]`.
-- `metric_categories` - (Optional) A set of metric categories to send to the log analytics workspace. Defaults to `["AllMetrics"]`.
-- `log_analytics_destination_type` - (Optional) The destination type for the diagnostic setting. Possible values are `Dedicated` and `AzureDiagnostics`. Defaults to `Dedicated`.
-- `workspace_resource_id` - (Optional) The resource ID of the log analytics workspace to send logs and metrics to.
-- `storage_account_resource_id` - (Optional) The resource ID of the storage account to send logs and metrics to.
-- `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the event hub authorization rule to send logs and metrics to.
-- `event_hub_name` - (Optional) The name of the event hub. If none is specified, the default event hub will be selected.
-- `marketplace_partner_resource_id` - (Optional) The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic LogsLogs.
-DESCRIPTION
-  nullable    = false
+  - `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
+  - `log_categories` - (Optional) A set of log categories to send to the log analytics workspace. Defaults to `[]`.
+  - `log_groups` - (Optional) A set of log groups to send to the log analytics workspace. Defaults to `["allLogs"]`.
+  - `metric_categories` - (Optional) A set of metric categories to send to the log analytics workspace. Defaults to `["AllMetrics"]`.
+  - `log_analytics_destination_type` - (Optional) The destination type for the diagnostic setting. Possible values are `Dedicated` and `AzureDiagnostics`. Defaults to `Dedicated`.
+  - `workspace_resource_id` - (Optional) The resource ID of the log analytics workspace to send logs and metrics to.
+  - `storage_account_resource_id` - (Optional) The resource ID of the storage account to send logs and metrics to.
+  - `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the event hub authorization rule to send logs and metrics to.
+  - `event_hub_name` - (Optional) The name of the event hub. If none is specified, the default event hub will be selected.
+  - `marketplace_partner_resource_id` - (Optional) The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic LogsLogs.
+  DESCRIPTION
+    nullable    = false
 
-  validation {
-    condition     = alltrue([for _, v in var.diagnostic_settings : contains(["Dedicated", "AzureDiagnostics"], v.log_analytics_destination_type)])
-    error_message = "Log analytics destination type must be one of: 'Dedicated', 'AzureDiagnostics'."
+    validation {
+      condition     = alltrue([for _, v in var.diagnostic_settings : contains(["Dedicated", "AzureDiagnostics"], v.log_analytics_destination_type)])
+      error_message = "Log analytics destination type must be one of: 'Dedicated', 'AzureDiagnostics'."
+    }
+    validation {
+      condition = alltrue(
+        [
+          for _, v in var.diagnostic_settings :
+          v.workspace_resource_id != null || v.storage_account_resource_id != null || v.event_hub_authorization_rule_resource_id != null || v.marketplace_partner_resource_id != null
+        ]
+      )
+      error_message = "At least one of `workspace_resource_id`, `storage_account_resource_id`, `marketplace_partner_resource_id`, or `event_hub_authorization_rule_resource_id`, must be set."
+    }
   }
-  validation {
-    condition = alltrue(
-      [
-        for _, v in var.diagnostic_settings :
-        v.workspace_resource_id != null || v.storage_account_resource_id != null || v.event_hub_authorization_rule_resource_id != null || v.marketplace_partner_resource_id != null
-      ]
-    )
-    error_message = "At least one of `workspace_resource_id`, `storage_account_resource_id`, `marketplace_partner_resource_id`, or `event_hub_authorization_rule_resource_id`, must be set."
-  }
-}
 
-variable "enable_telemetry" {
+  variable "enable_telemetry" {
   type        = bool
   default     = true
   description = <<DESCRIPTION
-This variable controls whether or not telemetry is enabled for the module.
-For more information see <https://aka.ms/avm/telemetryinfo>.
-If it is set to false, then no telemetry will be collected.
-DESCRIPTION
+  This variable controls whether or not telemetry is enabled for the module.
+  For more information see <https://aka.ms/avm/telemetryinfo>.
+  If it is set to false, then no telemetry will be collected.
+  DESCRIPTION
   nullable    = false
 }
 
@@ -160,25 +160,25 @@ variable "keys" {
   }))
   default     = {}
   description = <<DESCRIPTION
-A map of keys to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+  A map of keys to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
-- `name` - The name of the key.
-- `key_type` - The type of the key. Possible values are `EC` and `RSA`.
-- `key_opts` - A list of key options. Possible values are `decrypt`, `encrypt`, `sign`, `unwrapKey`, `verify`, and `wrapKey`.
-- `key_size` - The size of the key. Required for `RSA` keys.
-- `curve` - The curve of the key. Required for `EC` keys.  Possible values are `P-256`, `P-256K`, `P-384`, and `P-521`. The API will default to `P-256` if nothing is specified.
-- `not_before_date` - The not before date of the key.
-- `expiration_date` - The expiration date of the key.
-- `tags` - A mapping of tags to assign to the key.
-- `rotation_policy` - The rotation policy of the key.
-  - `automatic` - The automatic rotation policy of the key.
-    - `time_after_creation` - The time after creation of the key before it is automatically rotated.
-    - `time_before_expiry` - The time before expiry of the key before it is automatically rotated.
-  - `expire_after` - The time after which the key expires.
-  - `notify_before_expiry` - The time before expiry of the key when notification emails will be sent.
+  - `name` - The name of the key.
+  - `key_type` - The type of the key. Possible values are `EC` and `RSA`.
+  - `key_opts` - A list of key options. Possible values are `decrypt`, `encrypt`, `sign`, `unwrapKey`, `verify`, and `wrapKey`.
+  - `key_size` - The size of the key. Required for `RSA` keys.
+  - `curve` - The curve of the key. Required for `EC` keys.  Possible values are `P-256`, `P-256K`, `P-384`, and `P-521`. The API will default to `P-256` if nothing is specified.
+  - `not_before_date` - The not before date of the key.
+  - `expiration_date` - The expiration date of the key.
+  - `tags` - A mapping of tags to assign to the key.
+  - `rotation_policy` - The rotation policy of the key.
+    - `automatic` - The automatic rotation policy of the key.
+      - `time_after_creation` - The time after creation of the key before it is automatically rotated.
+      - `time_before_expiry` - The time before expiry of the key before it is automatically rotated.
+    - `expire_after` - The time after which the key expires.
+    - `notify_before_expiry` - The time before expiry of the key when notification emails will be sent.
 
-Supply role assignments in the same way as for `var.role_assignments`.
-DESCRIPTION
+  Supply role assignments in the same way as for `var.role_assignments`.
+  DESCRIPTION
   nullable    = false
 }
 

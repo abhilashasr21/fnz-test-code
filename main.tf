@@ -42,26 +42,36 @@ resource "azurerm_application_security_group" "asg01" {
 }
 
 module "pep01" {
-  source                                     = "./Module/Private Endpoint"
-  private_connection_resource_id             = module.keyvault.resourceid
-  location                                   = var.location
-  name                                       = "pep01"
-  resource_group_name                        = azurerm_resource_group.test.name
-  subnet_resource_id                         = azurerm_subnet.subnet01.id
-  network_interface_name                     = "pep01-nic"
-  private_service_connection_name            = "pep01-psc"
-  subresource_names                          = ["vault"]
-  application_security_group_association_ids = [azurerm_application_security_group.asg01.id]
+  source                          = "./Module/Private Endpoint"
+  private_connection_resource_id  = module.keyvault.resourceid
+  location                        = var.location
+  name                            = "pep01"
+  resource_group_name             = azurerm_resource_group.test.name
+  subnet_resource_id              = azurerm_subnet.subnet01.id
+  network_interface_name          = "pep01-nic"
+  private_service_connection_name = "pep01-psc"
+  subresource_names               = ["vault"]
+  # application_security_group_association_ids = [azurerm_application_security_group.asg01.id]
+  asg_id = azurerm_application_security_group.asg01.id
+  private_dns_zone_group_name = "dnszone-pep01"
+  private_dns_zone_resource_ids = [ "${module.pdz.private_dns_zone_ids}" ]
   depends_on = [
     azurerm_resource_group.test,
     azurerm_virtual_network.vnet01,
     azurerm_subnet.subnet01,
-    azurerm_application_security_group.asg01
+    azurerm_application_security_group.asg01,
+    module.pdz,
+    module.keyvault
   ]
 }
 
 module "pdz" {
-  source = "./Module/Private DNS Zone"
-  domain_name                   = "privatelink.vaultcore.azure.net"
-  resource_group_name           = azurerm_resource_group.test.name
+  source              = "./Module/Private DNS Zone"
+  domain_name         = "privatelink.vaultcore.azure.net"
+  resource_group_name = azurerm_resource_group.test.name
+  virtual_network_links = {
+    vnet01 = {
+      virtual_network_id = azurerm_virtual_network.vnet01.id
+    }
+  }
 }

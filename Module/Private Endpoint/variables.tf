@@ -29,10 +29,14 @@ variable "subnet_resource_id" {
   description = "(Required) Azure resource ID of the Subnet from which Private IP Addresses will be allocated for this Private Endpoint. Changing this forces a new resource to be created."
 }
 
-variable "application_security_group_association_ids" {
-  type        = set(string)
-  default     = []
-  description = "(Optional) The resource ids of application security group to associate."
+# variable "application_security_group_association_ids" {
+#   type        = set(string)
+#   default     = []
+#   description = "(Optional) The resource ids of application security group to associate."
+# }
+
+variable "asg_id" {
+  type = string
 }
 
 variable "enable_telemetry" {

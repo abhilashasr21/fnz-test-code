@@ -33,9 +33,10 @@ resource "azurerm_private_endpoint" "this" {
 }
 
 resource "azurerm_private_endpoint_application_security_group_association" "this" {
-  for_each = var.application_security_group_association_ids
+  # for_each = var.application_security_group_association_ids
 
-  application_security_group_id = each.value
+  # application_security_group_id = each.value
+  application_security_group_id = var.asg_id
   private_endpoint_id           = azurerm_private_endpoint.this.id
 }
 

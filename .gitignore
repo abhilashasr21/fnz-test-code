@@ -1,0 +1,9 @@
+
+#Exclude Files
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+
+#Exclude Folder
+.terraform/

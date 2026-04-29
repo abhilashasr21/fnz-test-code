@@ -9,13 +9,13 @@ terraform {
     }
   }
 
-  # backend "remote" {
-  #   hostname     = "fnztrial.jfrog.io"
-  #   organization = "bu001"
-  #   workspaces {
-  #     name = "mgmt"
-  #   }
-  # }
+  backend "remote" {
+    hostname     = "fnztrial.jfrog.io"
+    organization = "bu001"
+    workspaces {
+      name = "mgmt"
+    }
+  }
 
 
 }

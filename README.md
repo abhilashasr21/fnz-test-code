@@ -22,3 +22,5 @@ Folder Conatines a code for the Subscription Vending.
 ### Module Description
 
 - `Keyvault` : It Contains the AVM code for creating the Keyvault along with Private endpoint and their keys and secrets.
+-`Private Endpoint` : It contains the AVM Code for Private Endpoint
+-`Private DNS Zone` : It Conatains the Code for Private DNS Zone along with Virtual Network link.

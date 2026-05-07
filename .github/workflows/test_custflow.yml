@@ -90,12 +90,12 @@ jobs:
         working-directory: tenant
         run: |
           terraform plan \
-            -var-file=".\mgmt\${{ github.event.inputs.customer_name }}\${{ github.event.inputs.customer_name }}.tfvars" \
+            -var-file="mgmt/bu0001/bu0001.tfvars" \
             -out=tfplan
 
-      - name: Upload Plan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan-${{ env.CUSTID }}
-          path: ${{ env.CUSTOMER_FOLDER }}/tfplan
-          retention-days: 1
+      # - name: Upload Plan Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: tfplan-${{ env.CUSTID }}
+      #     path: ${{ env.CUSTOMER_FOLDER }}/tfplan
+      #     retention-days: 1

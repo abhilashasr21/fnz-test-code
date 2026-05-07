@@ -8,16 +8,6 @@ terraform {
       version = ">= 3.80.0, < 4.0.0"
     }
   }
-
-  # backend "remote" {
-  #   hostname     = "fnztrial.jfrog.io"
-  #   organization = "bu001"
-  #   workspaces {
-  #     name = "mgmt"
-  #   }
-  # }
-
-
 }
 
 # Configure the Microsoft Azure Provider 

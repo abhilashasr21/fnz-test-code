@@ -37,7 +37,6 @@ env:
   DEPLOY_ENV: ${{ github.event.inputs.planGitHubEnvironment }}
   CUSTID: ${{ github.event.inputs.customer_name }}
   CUSTOMER_FOLDER: tenant/mgmt/${{ github.event.inputs.customer_name }}
-  CONFIGURATION_FILE: mgmt/customer/${{github.event.inputs.customer_name}}
 
 jobs:
   RunCustomerFolder:
@@ -76,22 +75,14 @@ jobs:
       - name: Load Customer Config
         working-directory: tenant
         run: |
-          CONFIG_DIR="mgmt/customer/bu0001"
-          CONFIG_FILE="$CONFIG_DIR/bu0001.json"
-
-          if [ ! -d "$CONFIG_DIR" ]; then
-            echo "Error: Configuration directory not found at $CONFIG_DIR."
-            exit 1
-          fi
+          CONFIG_FILE="${{ env.CUSTOMER_FOLDER }}/${{ env.CUSTID }}.json"
 
           if [ ! -f "$CONFIG_FILE" ]; then
             echo "Error: Configuration file not found at $CONFIG_FILE."
-            echo "Files in $CONFIG_DIR:"
-            ls -la "$CONFIG_DIR" || true
+            ls -lrt
             exit 1
           fi
-
-          # Export Azure identity
+          
           echo "AZURE_TENANT_ID=$(jq -r '.tenant_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
           echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscription_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
           echo "AZURE_CLIENT_ID=$(jq -r '.client_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"

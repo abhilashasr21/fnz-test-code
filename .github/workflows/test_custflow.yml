@@ -1,4 +1,4 @@
-name: Management Group Deployment
+name: Management Group Deployment CI
 
 on:
   workflow_dispatch:

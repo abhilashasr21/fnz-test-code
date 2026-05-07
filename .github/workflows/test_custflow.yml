@@ -37,7 +37,7 @@ env:
   DEPLOY_ENV: ${{ github.event.inputs.planGitHubEnvironment }}
   CUSTID: ${{ github.event.inputs.customer_name }}
   CUSTOMER_FOLDER: tenant/mgmt/${{ github.event.inputs.customer_name }}
-  CONFIGURATION_FILE: mgmt/customer/${{github.event.inputs.customer_name}}/${{github.event.inputs.customer_name}}.json
+  CONFIGURATION_FILE: tenant/mgmt/customer/${{github.event.inputs.customer_name}}/${{github.event.inputs.customer_name}}.json
 
 jobs:
   RunCustomerFolder:

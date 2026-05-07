@@ -1,0 +1,171 @@
+name: Management Group Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      customer_name:
+        description: 'Customer name (folder name in tenant directory)'
+        required: true
+        type: string
+      planGitHubEnvironment:
+        description: 'GitHub Environment for Planning'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      deployGitHubEnvironment:
+        description: 'GitHub Environment for Deployment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+# Prevent parallel runs against the same customer + environment
+concurrency:
+  group: Management Group - ${{ github.event.inputs.customer_name }}-${{ github.event.inputs.deployGitHubEnvironment }}
+  cancel-in-progress: false
+
+# Global envs
+env:
+  DEPLOY_ENV: ${{ github.event.inputs.planGitHubEnvironment }}
+  CUSTID: ${{ github.event.inputs.customer_name }}
+  CUSTOMER_FOLDER: tenant/${{ github.event.inputs.customer_name }}
+
+jobs:
+  JFrogInitialization:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: jFrog
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+    #   - name: JFrog Setup
+    #     uses: fnz-dev/action-setup-jfrog@v1.2.0
+    #     with:
+    #       configure-terraform: true
+
+      - name: Initializing Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.DEPLOY_ENV }}
+
+      - name: Validate Customer Folder
+        run: |
+          if [ ! -d "${{ env.CUSTOMER_FOLDER }}" ]; then
+            echo "Error: Customer folder not found at ${{ env.CUSTOMER_FOLDER }}"
+            exit 1
+          fi
+          echo "✓ Customer folder found: ${{ env.CUSTOMER_FOLDER }}"
+
+      - name: Validate Customer Files
+        run: |
+          TFVARS_FILE="${{ env.CUSTOMER_FOLDER }}/$(ls ${{ env.CUSTOMER_FOLDER }} | grep -E '\.tfvars$' | head -1)"
+          CONFIG_FILE="${{ env.CUSTOMER_FOLDER }}/configuration.tf"
+          
+          if [ ! -f "$TFVARS_FILE" ]; then
+            echo "Error: .tfvars file not found in ${{ env.CUSTOMER_FOLDER }}"
+            exit 1
+          fi
+          
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Error: configuration.tf file not found in ${{ env.CUSTOMER_FOLDER }}"
+            exit 1
+          fi
+          
+          echo "✓ Found tfvars file: $TFVARS_FILE"
+          echo "✓ Found configuration file: $CONFIG_FILE"
+          echo "TFVARS_FILE=$TFVARS_FILE" >> $GITHUB_ENV
+          echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
+
+      - name: Terraform Format Check
+        run: |
+          terraform fmt -check -recursive ${{ env.CUSTOMER_FOLDER }}
+
+      - name: Terraform Init
+        run: |
+          terraform init -backend=false -upgrade
+
+      - name: Terraform Validate
+        run: |
+          terraform validate
+
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+            -var-file="${{ env.TFVARS_FILE }}" \
+            -out=tfplan
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan-${{ env.CUSTID }}
+          path: jFrog/tfplan
+          retention-days: 1
+
+#   TerraformApproval:
+#     needs: JFrogInitialization
+#     runs-on: fnz-ubuntu-latest
+#     environment:
+#       name: ${{ github.event.inputs.deployGitHubEnvironment }}
+    
+#     steps:
+#       - name: Approve Terraform Plan
+#         run: |
+#           echo "✓ Terraform plan approved for customer: ${{ env.CUSTID }}"
+#           echo "✓ Proceeding with deployment to ${{ github.event.inputs.deployGitHubEnvironment }}"
+
+#   TerraformDeploy:
+#     needs: [JFrogInitialization, TerraformApproval]
+#     runs-on: fnz-ubuntu-latest
+#     environment:
+#       name: ${{ github.event.inputs.deployGitHubEnvironment }}
+
+#     defaults:
+#       run:
+#         working-directory: jFrog
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v5
+
+#       - name: JFrog Setup
+#         uses: fnz-dev/action-setup-jfrog@v1.2.0
+#         with:
+#           configure-terraform: true
+
+#       - name: Initializing Terraform
+#         uses: hashicorp/setup-terraform@v3
+#         with:
+#           terraform_version: ${{ env.DEPLOY_ENV }}
+
+#       - name: Download Plan Artifact
+#         uses: actions/download-artifact@v3
+#         with:
+#           name: tfplan-${{ env.CUSTID }}
+#           path: jFrog/
+
+#       - name: Terraform Init
+#         run: |
+#           terraform init -upgrade
+
+#       - name: Terraform Apply
+#         run: |
+#           terraform apply tfplan
+
+#       - name: Deployment Summary
+#         run: |
+#           echo "✓ Deployment completed successfully for customer: ${{ env.CUSTID }}"
+#           echo "✓ Environment: ${{ github.event.inputs.deployGitHubEnvironment }}"

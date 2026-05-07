@@ -1,0 +1,7 @@
+#create resource for management group]
+management_groups = {
+  "mgmtgroup1" = {
+    "display_name" = "mgmtgroup1"
+    "parent_id" = null
+  }
+}

@@ -77,7 +77,7 @@ jobs:
         working-directory: tenant
         run: |
           CONFIG_DIR="mgmt/customer/bu0001"
-          CONFIG_FILE="$CONFIG_DIR/config.json"
+          CONFIG_FILE="$CONFIG_DIR/bu0001.json"
 
           if [ ! -d "$CONFIG_DIR" ]; then
             echo "Error: Configuration directory not found at $CONFIG_DIR."

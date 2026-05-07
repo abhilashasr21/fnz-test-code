@@ -80,7 +80,7 @@ jobs:
           if [ ! -f "$CONFIG_FILE" ]; then
             echo "Error: Configuration file not found at $CONFIG_FILE ."
             echo Available files:
-            ls -l customers/*/*/*.json 2>/dev/null | sed 's|customers/||;s|\.json||' || echo "(none)'
+            ls -l customers/*/*/*.json 2>/dev/null | sed 's|customers/||;s|\.json||' || echo "(none)"
             exit 1
           fi
 

@@ -29,12 +29,10 @@ permissions:
   contents: read
   pull-requests: write
 
-# Prevent parallel runs against the same customer + environment
 concurrency:
   group: Management Group - ${{ github.event.inputs.customer_name }}-${{ github.event.inputs.deployGitHubEnvironment }}
   cancel-in-progress: false
 
-# Global envs
 env:
   DEPLOY_ENV: ${{ github.event.inputs.planGitHubEnvironment }}
   CUSTID: ${{ github.event.inputs.customer_name }}
@@ -99,7 +97,7 @@ jobs:
         working-directory: ${{ env.CUSTOMER_FOLDER }}
         run: |
           terraform plan \
-            -var-file="${{ env.TFVARS_FILE }}" \
+            -var-file="bu0001.tfvars" \
             -out=tfplan
 
       - name: Upload Plan Artifact
@@ -108,51 +106,3 @@ jobs:
           name: tfplan-${{ env.CUSTID }}
           path: ${{ env.CUSTOMER_FOLDER }}/tfplan
           retention-days: 1
-
-#   TerraformApproval:
-#     needs: RunCustomerFolder
-#     runs-on: ubuntu-latest
-#     environment:
-#       name: ${{ github.event.inputs.deployGitHubEnvironment }}
-    
-#     steps:
-#       - name: Approve Terraform Plan
-#         run: |
-#           echo "✓ Terraform plan approved for customer: ${{ env.CUSTID }}"
-#           echo "✓ Proceeding with deployment to ${{ github.event.inputs.deployGitHubEnvironment }}"
-
-#   TerraformDeploy:
-#     needs: [RunCustomerFolder, TerraformApproval]
-#     runs-on: ubuntu-latest
-#     environment:
-#       name: ${{ github.event.inputs.deployGitHubEnvironment }}
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v5
-
-#       - name: Initializing Terraform
-#         uses: hashicorp/setup-terraform@v2
-#         with:
-#           terraform_version: ${{ env.DEPLOY_ENV }}
-
-#       - name: Download Plan Artifact
-#         uses: actions/download-artifact@v4
-#         with:
-#           name: tfplan-${{ env.CUSTID }}
-#           path: ${{ env.CUSTOMER_FOLDER }}/
-
-#       - name: Terraform Init
-#         working-directory: ${{ env.CUSTOMER_FOLDER }}
-#         run: |
-#           terraform init -upgrade
-
-#       - name: Terraform Apply
-#         working-directory: ${{ env.CUSTOMER_FOLDER }}
-#         run: |
-#           terraform apply tfplan
-
-#       - name: Deployment Summary
-#         run: |
-#           echo "✓ Deployment completed successfully for customer: ${{ env.CUSTID }}"
-#           echo "✓ Environment: ${{ github.event.inputs.deployGitHubEnvironment }}"

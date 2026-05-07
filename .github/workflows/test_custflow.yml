@@ -41,24 +41,19 @@ env:
   CUSTOMER_FOLDER: tenant/${{ github.event.inputs.customer_name }}
 
 jobs:
-  JFrogInitialization:
+  RunCustomerFolder:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: jFrog
+        working-directory: tenant
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-    #   - name: JFrog Setup
-    #     uses: fnz-dev/action-setup-jfrog@v1.2.0
-    #     with:
-    #       configure-terraform: true
-
       - name: Initializing Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.DEPLOY_ENV }}
 

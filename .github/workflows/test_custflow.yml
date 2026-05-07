@@ -69,22 +69,15 @@ jobs:
             exit 1
           fi
           
-          if [ ! -f "$CONFIG_FILE" ]; then
-            echo "Error: configuration.tf file not found in ${{ env.CUSTOMER_FOLDER }}"
-            exit 1
-          fi
-          
           echo "✓ Found tfvars file: $TFVARS_FILE"
-          echo "✓ Found configuration file: $CONFIG_FILE"
           echo "TFVARS_FILE=$TFVARS_FILE" >> $GITHUB_ENV
-          echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
 
       - name: Terraform Format Check
         run: |
           terraform fmt -check -recursive ${{ env.CUSTOMER_FOLDER }}
 
       - name: Terraform Init
-        working-directory: ${{ env.CUSTOMER_FOLDER }}
+        working-directory: tenant
         run: |
           terraform init -backend=false -upgrade
 
@@ -94,10 +87,10 @@ jobs:
           terraform validate
 
       - name: Terraform Plan
-        working-directory: ${{ env.CUSTOMER_FOLDER }}
+        working-directory: tenant
         run: |
           terraform plan \
-            -var-file="bu0001.tfvars" \
+            -var-file="${{ env.TFVARS_FILE }}" \
             -out=tfplan
 
       - name: Upload Plan Artifact

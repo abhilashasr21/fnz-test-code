@@ -36,7 +36,7 @@ concurrency:
 env:
   DEPLOY_ENV: ${{ github.event.inputs.planGitHubEnvironment }}
   CUSTID: ${{ github.event.inputs.customer_name }}
-  CUSTOMER_FOLDER: mgmt/${{ github.event.inputs.customer_name }}
+  CUSTOMER_FOLDER: tenant/mgmt/${{ github.event.inputs.customer_name }}
 
 jobs:
   RunCustomerFolder:

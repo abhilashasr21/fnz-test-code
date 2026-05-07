@@ -62,7 +62,6 @@ jobs:
       - name: Validate Customer Files
         run: |
           TFVARS_FILE=$(find "${{ env.CUSTOMER_FOLDER }}" -name "*.tfvars" -type f | head -1)
-          CONFIG_FILE="${{ env.CUSTOMER_FOLDER }}/configuration.tf"
           
           if [ -z "$TFVARS_FILE" ]; then
             echo "Error: .tfvars file not found in ${{ env.CUSTOMER_FOLDER }}"
@@ -73,21 +72,21 @@ jobs:
           echo "TFVARS_FILE=$TFVARS_FILE" >> $GITHUB_ENV
 
 
-      # - name: Load Customer Config
-      #   run: |
-      #     CONFIG_FILE="mgmt/customer/${{ env.CUSTID }}/${{env.CUSTID}}.json"
+      - name: Load Customer Config
+        run: |
+          CONFIG_FILE="mgmt/customer/${{ env.CUSTID }}/${{env.CUSTID}}.json"
 
-      #     if [ ! -f "$CONFIG_FILE" ]; then
-      #       echo "Error: Configuration file not found at ${{CONFIG_FILE}}"
-      #       echo Available files:
-      #       ls -l customers/*/*/*.json 2>/dev/null | sed 's|customers/||;s|\.json||' || echo "(none)'
-      #       exit 1
-      #     fi
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Error: Configuration file not found at $CONFIG_FILE ."
+            echo Available files:
+            ls -l customers/*/*/*.json 2>/dev/null | sed 's|customers/||;s|\.json||' || echo "(none)'
+            exit 1
+          fi
 
-      #     # Export Azure identity
-      #     echo "AZURE_TENANT_ID=$(jq -r '.tenant_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
-      #     echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscription_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
-      #     echo "AZURE_CLIENT_ID=$(jq -r '.client_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
+          # Export Azure identity
+          echo "AZURE_TENANT_ID=$(jq -r '.tenant_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
+          echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscription_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
+          echo "AZURE_CLIENT_ID=$(jq -r '.client_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
 
       - name: Set Env Vars
         run: |

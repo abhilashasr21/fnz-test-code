@@ -72,8 +72,7 @@ jobs:
           echo "TFVARS_FILE=$TFVARS_FILE" >> $GITHUB_ENV
 
 
-      - name: Load Customer Config
-        working-directory: tenant
+      - name: Load Customer Configuration
         run: |
           CONFIG_FILE="${{ env.CUSTOMER_FOLDER }}/${{ env.CUSTID }}.json"
 
@@ -82,7 +81,7 @@ jobs:
             ls -lrt
             exit 1
           fi
-          
+
           echo "AZURE_TENANT_ID=$(jq -r '.tenant_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
           echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscription_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
           echo "AZURE_CLIENT_ID=$(jq -r '.client_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"

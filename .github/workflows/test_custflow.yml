@@ -44,10 +44,6 @@ jobs:
   RunCustomerFolder:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: tenant
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -67,10 +63,10 @@ jobs:
 
       - name: Validate Customer Files
         run: |
-          TFVARS_FILE="${{ env.CUSTOMER_FOLDER }}/$(ls ${{ env.CUSTOMER_FOLDER }} | grep -E '\.tfvars$' | head -1)"
+          TFVARS_FILE=$(find "${{ env.CUSTOMER_FOLDER }}" -name "*.tfvars" -type f | head -1)
           CONFIG_FILE="${{ env.CUSTOMER_FOLDER }}/configuration.tf"
           
-          if [ ! -f "$TFVARS_FILE" ]; then
+          if [ -z "$TFVARS_FILE" ]; then
             echo "Error: .tfvars file not found in ${{ env.CUSTOMER_FOLDER }}"
             exit 1
           fi
@@ -90,14 +86,17 @@ jobs:
           terraform fmt -check -recursive ${{ env.CUSTOMER_FOLDER }}
 
       - name: Terraform Init
+        working-directory: ${{ env.CUSTOMER_FOLDER }}
         run: |
           terraform init -backend=false -upgrade
 
       - name: Terraform Validate
+        working-directory: ${{ env.CUSTOMER_FOLDER }}
         run: |
           terraform validate
 
       - name: Terraform Plan
+        working-directory: ${{ env.CUSTOMER_FOLDER }}
         run: |
           terraform plan \
             -var-file="${{ env.TFVARS_FILE }}" \
@@ -107,12 +106,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-${{ env.CUSTID }}
-          path: tenant/tfplan
+          path: ${{ env.CUSTOMER_FOLDER }}/tfplan
           retention-days: 1
 
 #   TerraformApproval:
-#     needs: JFrogInitialization
-#     runs-on: fnz-ubuntu-latest
+#     needs: RunCustomerFolder
+#     runs-on: ubuntu-latest
 #     environment:
 #       name: ${{ github.event.inputs.deployGitHubEnvironment }}
     
@@ -123,26 +122,17 @@ jobs:
 #           echo "✓ Proceeding with deployment to ${{ github.event.inputs.deployGitHubEnvironment }}"
 
 #   TerraformDeploy:
-#     needs: [JFrogInitialization, TerraformApproval]
-#     runs-on: fnz-ubuntu-latest
+#     needs: [RunCustomerFolder, TerraformApproval]
+#     runs-on: ubuntu-latest
 #     environment:
 #       name: ${{ github.event.inputs.deployGitHubEnvironment }}
-
-#     defaults:
-#       run:
-#         working-directory: jFrog
 
 #     steps:
 #       - name: Checkout code
 #         uses: actions/checkout@v5
 
-#       - name: JFrog Setup
-#         uses: fnz-dev/action-setup-jfrog@v1.2.0
-#         with:
-#           configure-terraform: true
-
 #       - name: Initializing Terraform
-#         uses: hashicorp/setup-terraform@v3
+#         uses: hashicorp/setup-terraform@v2
 #         with:
 #           terraform_version: ${{ env.DEPLOY_ENV }}
 
@@ -150,13 +140,15 @@ jobs:
 #         uses: actions/download-artifact@v4
 #         with:
 #           name: tfplan-${{ env.CUSTID }}
-#           path: tenant/
+#           path: ${{ env.CUSTOMER_FOLDER }}/
 
 #       - name: Terraform Init
+#         working-directory: ${{ env.CUSTOMER_FOLDER }}
 #         run: |
 #           terraform init -upgrade
 
 #       - name: Terraform Apply
+#         working-directory: ${{ env.CUSTOMER_FOLDER }}
 #         run: |
 #           terraform apply tfplan
 

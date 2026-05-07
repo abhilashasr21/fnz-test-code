@@ -76,13 +76,18 @@ jobs:
       - name: Load Customer Config
         working-directory: tenant
         run: |
-          CONFIG_FILE="${{ env.CONFIGURATION_FILE }}"
+          CONFIG_DIR="mgmt/customer/bu0001"
+          CONFIG_FILE="$CONFIG_DIR/config.json"
+
+          if [ ! -d "$CONFIG_DIR" ]; then
+            echo "Error: Configuration directory not found at $CONFIG_DIR."
+            exit 1
+          fi
 
           if [ ! -f "$CONFIG_FILE" ]; then
-            echo "Error: Configuration file not found at $CONFIG_FILE ."
-            echo Available files:
-            ls -l customers/*/*/*.json 2>/dev/null | sed 's|customers/||;s|\.json||' || echo "(none)"
-            ls -lrt
+            echo "Error: Configuration file not found at $CONFIG_FILE."
+            echo "Files in $CONFIG_DIR:"
+            ls -la "$CONFIG_DIR" || true
             exit 1
           fi
 

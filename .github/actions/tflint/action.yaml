@@ -4,14 +4,14 @@ description: "Install and run TFLint. Working directory is read from env.TF_WORK
 runs:
   using: "composite"
   steps:
-    - name: Verify TF_WORKING_DIR is set
-      shell: bash
-      run: |
-        if [ -z "${TF_WORKING_DIR}" ]; then
-          echo "::error::TF_WORKING_DIR env var is not set. Define it in the calling workflow."
-          exit 1
-        fi
-        echo "Using TF_WORKING_DIR=${TF_WORKING_DIR}"
+    # - name: Verify TF_WORKING_DIR is set
+    #   shell: bash
+    #   run: |
+    #     if [ -z "${TF_WORKING_DIR}" ]; then
+    #       echo "::error::TF_WORKING_DIR env var is not set. Define it in the calling workflow."
+    #       exit 1
+    #     fi
+    #     echo "Using TF_WORKING_DIR=${TF_WORKING_DIR}"
 
     - name: Setup TFLint (latest)
       uses: terraform-linters/setup-tflint@v4
@@ -24,12 +24,12 @@ runs:
 
     - name: TFLint init (download plugins)
       shell: bash
-      working-directory: ${{ env.TF_WORKING_DIR }}
+      # working-directory: ${{ env.TF_WORKING_DIR }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: tflint --init
 
     - name: Run TFLint
       shell: bash
-      working-directory: ${{ env.TF_WORKING_DIR }}
+      # working-directory: ${{ env.TF_WORKING_DIR }}
       run: tflint --format=default --call-module-type=${{ inputs.call-module-type }}

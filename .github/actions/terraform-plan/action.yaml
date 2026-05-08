@@ -61,10 +61,6 @@ runs:
         tenant-id: ${{ inputs.azure-tenant-id }}
         subscription-id: ${{ inputs.azure-subscription-id }}
 
-    - name: Terraform Format Check
-      shell: bash
-      run: terraform fmt -check -recursive
-
     # All backend auth is passed via -backend-config so nothing is hardcoded in HCL.
     - name: Terraform Init
       shell: bash

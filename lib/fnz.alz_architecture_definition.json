@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/architecture_definition.json",
+  "name": "fnz",
+  "management_groups": [
+    { "id": "fnz-root", "display_name": "FNZ Root", "archetypes": [], "parent_id": null, "exists": false },
+
+    { "id": "mg10001", "display_name": "Fnz Intermediate Prod",        "archetypes": [], "parent_id": "fnz-root", "exists": false },
+    { "id": "mg10002", "display_name": "APAC - Prod",                  "archetypes": [], "parent_id": "mg10001",  "exists": false },
+    { "id": "mg10003", "display_name": "Americas - Prod",              "archetypes": [], "parent_id": "mg10001",  "exists": false },
+    { "id": "mg10004", "display_name": "Americas Platform - Prod",     "archetypes": [], "parent_id": "mg10003",  "exists": false },
+    { "id": "mg10005", "display_name": "Platform - Prod",              "archetypes": [], "parent_id": "mg10004",  "exists": false },
+    { "id": "mg10006", "display_name": "Management - Prod",            "archetypes": [], "parent_id": "mg10004",  "exists": false },
+    { "id": "mg10007", "display_name": "Americas - Workloads - Prod",  "archetypes": [], "parent_id": "mg10003",  "exists": false },
+    { "id": "mg10008", "display_name": "Canada - Prod",                "archetypes": [], "parent_id": "mg10007",  "exists": false },
+    { "id": "mg10009", "display_name": "USA - Prod",                   "archetypes": [], "parent_id": "mg10007",  "exists": false },
+    { "id": "mg10010", "display_name": "Security - Prod",              "archetypes": [], "parent_id": "mg10001",  "exists": false },
+    { "id": "mg10011", "display_name": "Decommissioned - Prod",        "archetypes": [], "parent_id": "mg10001",  "exists": false },
+    { "id": "mg10012", "display_name": "Sandbox - Prod",               "archetypes": [], "parent_id": "mg10001",  "exists": false },
+
+    { "id": "mg00001", "display_name": "Fnz Intermediate Non-Prod",        "archetypes": [], "parent_id": "fnz-root", "exists": false },
+    { "id": "mg00002", "display_name": "APAC - Non-Prod",                  "archetypes": [], "parent_id": "mg00001",  "exists": false },
+    { "id": "mg00003", "display_name": "Americas - Non-Prod",              "archetypes": [], "parent_id": "mg00001",  "exists": false },
+    { "id": "mg00004", "display_name": "Americas Platform - Non-Prod",     "archetypes": [], "parent_id": "mg00003",  "exists": false },
+    { "id": "mg00005", "display_name": "Platform - Non-Prod",              "archetypes": [], "parent_id": "mg00004",  "exists": false },
+    { "id": "mg00006", "display_name": "Management - Non-Prod",            "archetypes": [], "parent_id": "mg00004",  "exists": false },
+    { "id": "mg00007", "display_name": "Americas - Workloads - Non-Prod",  "archetypes": [], "parent_id": "mg00003",  "exists": false },
+    { "id": "mg00008", "display_name": "Canada - Non-Prod",                "archetypes": [], "parent_id": "mg00007",  "exists": false },
+    { "id": "mg00009", "display_name": "USA - Non-Prod",                   "archetypes": [], "parent_id": "mg00007",  "exists": false },
+    { "id": "mg00010", "display_name": "Security - Non-Prod",              "archetypes": [], "parent_id": "mg00001",  "exists": false },
+    { "id": "mg00011", "display_name": "Decommissioned - Non-Prod",        "archetypes": [], "parent_id": "mg00001",  "exists": false },
+    { "id": "mg00012", "display_name": "Sandbox - Non-Prod",               "archetypes": [], "parent_id": "mg00001",  "exists": false }
+  ]
+}

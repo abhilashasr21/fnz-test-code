@@ -1,0 +1,125 @@
+name: Management Group Deployment CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      customer_name:
+        description: 'Customer name (folder name in tenant directory)'
+        required: true
+        type: string
+      planGitHubEnvironment:
+        description: 'GitHub Environment for Planning'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      deployGitHubEnvironment:
+        description: 'GitHub Environment for Deployment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: Management Group - ${{ github.event.inputs.customer_name }}-${{ github.event.inputs.deployGitHubEnvironment }}
+  cancel-in-progress: false
+
+env:
+  DEPLOY_ENV: ${{ github.event.inputs.planGitHubEnvironment }}
+  CUSTID: ${{ github.event.inputs.customer_name }}
+  CUSTOMER_FOLDER: tenant/mgmt/${{ github.event.inputs.customer_name }}
+
+jobs:
+  RunCustomerFolder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Initializing Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.DEPLOY_ENV }}
+
+      - name: Validate Customer Folder
+        run: |
+          if [ ! -d "${{ env.CUSTOMER_FOLDER }}" ]; then
+            echo "Error: Customer folder not found at ${{ env.CUSTOMER_FOLDER }}"
+            exit 1
+          fi
+          echo "✓ Customer folder found: ${{ env.CUSTOMER_FOLDER }}"
+
+      - name: Validate Customer Files
+        run: |
+          TFVARS_FILE=$(find "${{ env.CUSTOMER_FOLDER }}" -name "*.tfvars" -type f | head -1)
+          
+          if [ -z "$TFVARS_FILE" ]; then
+            echo "Error: .tfvars file not found in ${{ env.CUSTOMER_FOLDER }}"
+            exit 1
+          fi
+          
+          echo "✓ Found tfvars file: $TFVARS_FILE"
+          echo "TFVARS_FILE=$TFVARS_FILE" >> $GITHUB_ENV
+
+
+      - name: Load Customer Configuration
+        run: |
+          CONFIG_FILE="${{ env.CUSTOMER_FOLDER }}/${{ env.CUSTID }}.json"
+
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Error: Configuration file not found at $CONFIG_FILE."
+            ls -lrt
+            exit 1
+          fi
+
+          echo "AZURE_TENANT_ID=$(jq -r '.tenant_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
+          echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscription_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
+          echo "AZURE_CLIENT_ID=$(jq -r '.client_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
+
+      - name: Set Env Vars
+        run: |
+          echo "TF_VAR_environment=${{ env.DEPLOY_ENV }}" >> $GITHUB_ENV
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v3
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}      
+      - name: Terraform Format Check
+        run: |
+          terraform fmt -check -recursive ${{ env.CUSTOMER_FOLDER }}
+
+      - name: Terraform Init
+        working-directory: tenant
+        run: |
+          terraform init -backend=false -upgrade
+
+      - name: Terraform Validate
+        working-directory: ${{ env.CUSTOMER_FOLDER }}
+        run: |
+          terraform validate
+
+      - name: Terraform Plan
+        working-directory: tenant
+        run: |
+          terraform plan \
+            -var-file="mgmt/bu0001/bu0001.tfvars" \
+            -out=tfplan
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ env.CUSTID }}
+          path: ${{ env.CUSTOMER_FOLDER }}/tfplan
+          retention-days: 1

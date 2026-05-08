@@ -32,10 +32,6 @@ runs:
       with:
         terraform_version: ${{ inputs.terraform-version }}
 
-    - name: Terraform fmt (check)
-      shell: bash
-      run: terraform fmt -check -recursive
-
     - name: Terraform Init
       shell: bash
       run: |
@@ -44,6 +40,10 @@ runs:
         else
           terraform init -input=false
         fi
+
+    - name: Terraform fmt (check)
+      shell: bash
+      run: terraform fmt -check -recursive
 
     - name: Terraform Validate
       shell: bash

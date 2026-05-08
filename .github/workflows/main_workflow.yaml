@@ -21,19 +21,19 @@ jobs:
       - name: Run TFLint
         uses: ./.github/actions/tflint
 
-#   terraform:
-#     name: Terraform Init / Validate / Plan
-#     runs-on: ubuntu-latest
-#     needs: lint
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+  terraform:
+    name: Terraform Init / Validate / Plan
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       # Add cloud auth here if needed (azure/login, aws-actions/configure-aws-credentials, etc.)
+      # Add cloud auth here if needed (azure/login, aws-actions/configure-aws-credentials, etc.)
 
-#       - name: Terraform Init / Validate / Plan
-#         id: tf
-#         uses: ./.github/actions/terraform-plan
+      - name: Terraform Init / Validate / Plan
+        id: tf
+        uses: ./.github/actions/terraform-plan
 
-#       - name: Plan summary
-#         run: echo "Plan exit code = ${{ steps.tf.outputs.plan-exitcode }}"
+      - name: Plan summary
+        run: echo "Plan exit code = ${{ steps.tf.outputs.plan-exitcode }}"

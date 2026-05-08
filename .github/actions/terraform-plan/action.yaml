@@ -1,0 +1,76 @@
+name: "Terraform Init, Validate & Plan"
+description: "Runs terraform fmt, init, validate, and plan against the repository root."
+
+inputs:
+  terraform-version:
+    description: "Terraform version to install"
+    required: false
+    default: "latest"
+  backend-config:
+    description: "Optional value passed to 'terraform init -backend-config='"
+    required: false
+    default: ""
+  var-file:
+    description: "Optional .tfvars file passed to 'terraform plan -var-file='"
+    required: false
+    default: ""
+  plan-out:
+    description: "Output file for the generated plan"
+    required: false
+    default: "tfplan.binary"
+
+outputs:
+  plan-exitcode:
+    description: "Exit code from 'terraform plan -detailed-exitcode' (0=no changes, 2=changes)"
+    value: ${{ steps.plan.outputs.exitcode }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform-version }}
+
+    - name: Terraform fmt (check)
+      shell: bash
+      run: terraform fmt -check -recursive
+
+    - name: Terraform Init
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.backend-config }}" ]; then
+          terraform init -input=false -backend-config="${{ inputs.backend-config }}"
+        else
+          terraform init -input=false
+        fi
+
+    - name: Terraform Validate
+      shell: bash
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      shell: bash
+      run: |
+        set +e
+        if [ -n "${{ inputs.var-file }}" ]; then
+          terraform plan -input=false -no-color -detailed-exitcode \
+            -var-file="${{ inputs.var-file }}" \
+            -out="${{ inputs.plan-out }}"
+        else
+          terraform plan -input=false -no-color -detailed-exitcode \
+            -out="${{ inputs.plan-out }}"
+        fi
+        code=$?
+        echo "exitcode=$code" >> "$GITHUB_OUTPUT"
+        # 0 = no changes, 2 = changes, 1 = error
+        if [ $code -eq 1 ]; then exit 1; fi
+        exit 0
+
+    - name: Upload plan artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan-${{ github.run_id }}
+        path: ${{ inputs.plan-out }}
+        retention-days: 5

@@ -4,16 +4,16 @@ variable "location" {
 }
 
 variable "app_name" {
-  type = string
+  type    = string
   default = "contso"
 }
 
 variable "vnet_address_range" {
-  type = set(string)
-  default = [ "10.0.0.0/16" ]
+  type    = set(string)
+  default = ["10.0.0.0/16"]
 }
 
 variable "subnet_address_range" {
-  type = list(string)
-  default = [ "10.0.2.0/24" ]
+  type    = list(string)
+  default = ["10.0.2.0/24"]
 }

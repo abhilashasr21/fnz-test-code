@@ -1,15 +1,11 @@
 name: "Terraform Init, Validate & Plan"
-description: "Runs terraform fmt, init, validate, and plan against the repository root."
+description: "Runs terraform fmt, init, validate, and plan against the repository root using OIDC auth from the pipeline."
 
 inputs:
   terraform-version:
     description: "Terraform version to install"
     required: false
     default: "latest"
-  backend-config:
-    description: "Optional value passed to 'terraform init -backend-config='"
-    required: false
-    default: ""
   var-file:
     description: "Optional .tfvars file passed to 'terraform plan -var-file='"
     required: false
@@ -18,14 +14,30 @@ inputs:
     description: "Output file for the generated plan"
     required: false
     default: "tfplan.binary"
+
+  # ---- Azure auth (OIDC) ----
   azure-client-id:
-    description: "Azure client ID for OIDC login"
+    description: "Azure client ID (federated app / UAMI) used for OIDC login"
     required: true
   azure-tenant-id:
-    description: "Azure tenant ID for OIDC login"
+    description: "Azure tenant ID"
     required: true
   azure-subscription-id:
-    description: "Azure subscription ID for OIDC login"
+    description: "Azure subscription ID"
+    required: true
+
+  # ---- Remote backend (azurerm) ----
+  backend-resource-group:
+    description: "Resource group containing the state storage account"
+    required: true
+  backend-storage-account:
+    description: "Storage account holding the Terraform state"
+    required: true
+  backend-container:
+    description: "Blob container holding the Terraform state"
+    required: true
+  backend-key:
+    description: "Blob name (state file key), e.g. prod.tfstate"
     required: true
 
 outputs:
@@ -41,19 +53,7 @@ runs:
       with:
         terraform_version: ${{ inputs.terraform-version }}
 
-    - name: Terraform Init
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.backend-config }}" ]; then
-          terraform init -input=false -backend-config="${{ inputs.backend-config }}"
-        else
-          terraform init -input=false
-        fi
-
-    - name: Terraform Validate
-      shell: bash
-      run: terraform validate
-
+    # OIDC login — produces the federated token Terraform's azurerm backend/provider will use.
     - name: OIDC Azure Login
       uses: azure/login@v2.3.0
       with:
@@ -61,7 +61,62 @@ runs:
         tenant-id: ${{ inputs.azure-tenant-id }}
         subscription-id: ${{ inputs.azure-subscription-id }}
 
+    - name: Terraform Format Check
+      shell: bash
+      run: terraform fmt -check -recursive
+
+    # All backend auth is passed via -backend-config so nothing is hardcoded in HCL.
+    - name: Terraform Init
+      shell: bash
+      env:
+        ARM_USE_OIDC: "true"
+        ARM_CLIENT_ID: ${{ inputs.azure-client-id }}
+        ARM_TENANT_ID: ${{ inputs.azure-tenant-id }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.azure-subscription-id }}
+      run: |
+        terraform init -input=false \
+          -backend-config="use_oidc=true" \
+          -backend-config="use_azuread_auth=true" \
+          -backend-config="tenant_id=${{ inputs.azure-tenant-id }}" \
+          -backend-config="subscription_id=${{ inputs.azure-subscription-id }}" \
+          -backend-config="client_id=${{ inputs.azure-client-id }}" \
+          -backend-config="resource_group_name=${{ inputs.backend-resource-group }}" \
+          -backend-config="storage_account_name=${{ inputs.backend-storage-account }}" \
+          -backend-config="container_name=${{ inputs.backend-container }}" \
+          -backend-config="key=${{ inputs.backend-key }}"
+
+    - name: Terraform Validate
+      shell: bash
+      run: terraform validate
+
     - name: Terraform Plan
       id: plan
       shell: bash
-      run: terraform plan
+      env:
+        ARM_USE_OIDC: "true"
+        ARM_CLIENT_ID: ${{ inputs.azure-client-id }}
+        ARM_TENANT_ID: ${{ inputs.azure-tenant-id }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.azure-subscription-id }}
+      run: |
+        set +e
+        if [ -n "${{ inputs.var-file }}" ]; then
+          terraform plan -input=false -detailed-exitcode \
+            -var-file="${{ inputs.var-file }}" \
+            -out="${{ inputs.plan-out }}"
+        else
+          terraform plan -input=false -detailed-exitcode \
+            -out="${{ inputs.plan-out }}"
+        fi
+        ec=$?
+        echo "exitcode=$ec" >> "$GITHUB_OUTPUT"
+        # 0 = no changes, 2 = changes, 1 = error
+        if [ $ec -eq 1 ]; then exit 1; fi
+        exit 0
+
+    - name: Upload Plan Artifact
+      if: steps.plan.outputs.exitcode == '2'
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan
+        path: ${{ inputs.plan-out }}
+        retention-days: 5

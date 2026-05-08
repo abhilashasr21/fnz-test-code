@@ -90,15 +90,15 @@ jobs:
         run: |
           echo "TF_VAR_environment=${{ env.DEPLOY_ENV }}" >> $GITHUB_ENV
 
-      - name: Azure Login (OIDC)
-        uses: azure/login@v3
-        with:
-          client-id: ${{ env.AZURE_CLIENT_ID }}
-          tenant-id: ${{ env.AZURE_TENANT_ID }}
-          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}      
-      - name: Terraform Format Check
-        run: |
-          terraform fmt -check -recursive ${{ env.CUSTOMER_FOLDER }}
+      # - name: Azure Login (OIDC)
+      #   uses: azure/login@v3
+      #   with:
+      #     client-id: ${{ env.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ env.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}      
+      # - name: Terraform Format Check
+      #   run: |
+      #     terraform fmt -check -recursive ${{ env.CUSTOMER_FOLDER }}
 
       - name: Terraform Init
         working-directory: tenant

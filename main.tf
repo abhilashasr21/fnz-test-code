@@ -1,46 +1,40 @@
-# data "azurerm_subscription" "current" {
-# }
+data "azurerm_subscription" "current" {
+}
 
-# variable "location" {
-#   type    = string
-#   default = "ukwest"
-# }
+resource "azurerm_resource_group" "test" {
+  name     = "${var.app_name}-rg-01"
+  location = var.location
+}
 
+module "keyvault" {
+  source                        = "./Module/keyvault"
+  tenant_id                     = data.azurerm_subscription.current.tenant_id
+  location                      = var.location
+  name                          = "${var.app_name}-keyvault01"
+  resource_group_name           = azurerm_resource_group.test.name
+  public_network_access_enabled = false
+}
 
-# resource "azurerm_resource_group" "test" {
-#   name     = "kv-test-rg"
-#   location = var.location
-# }
+resource "azurerm_virtual_network" "vnet01" {
+  name                = "${var.app_name}-vnet-01"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.test.name
+  address_space       = var.vnet_address_range
+}
 
-# module "keyvault" {
-#   source                        = "./Module/keyvault"
-#   tenant_id                     = data.azurerm_subscription.current.tenant_id
-#   location                      = var.location
-#   name                          = "testfnz01"
-#   resource_group_name           = azurerm_resource_group.test.name
-#   public_network_access_enabled = false
-# }
+resource "azurerm_subnet" "subnet01" {
+  name                 = "${var.app_name}-subnet01"
+  resource_group_name  = azurerm_resource_group.test.name
+  virtual_network_name = azurerm_virtual_network.vnet01.name
+  address_prefixes     = var.subnet_address_range
 
-# resource "azurerm_virtual_network" "vnet01" {
-#   name                = "test-vnet-01"
-#   location            = var.location
-#   resource_group_name = azurerm_resource_group.test.name
-#   address_space       = ["10.0.0.0/16"]
-# }
+}
 
-# resource "azurerm_subnet" "subnet01" {
-#   name                 = "subnet01"
-#   resource_group_name  = azurerm_resource_group.test.name
-#   virtual_network_name = azurerm_virtual_network.vnet01.name
-#   address_prefixes     = ["10.0.2.0/24"]
-
-# }
-
-# resource "azurerm_application_security_group" "asg01" {
-#   location            = var.location
-#   name                = "asg01"
-#   resource_group_name = azurerm_resource_group.test.name
-# }
+resource "azurerm_application_security_group" "asg01" {
+  location            = var.location
+  name                = "${var.app_name}-asg01"
+  resource_group_name = azurerm_resource_group.test.name
+}
 
 # module "pep01" {
 #   source                          = "./Module/Private Endpoint"

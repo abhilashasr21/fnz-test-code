@@ -1,0 +1,43 @@
+name: Terraform CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+    id-token: write
+    contents: read
+    pull-requests: write
+
+jobs:
+  lint:
+    name: TFLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run TFLint
+        uses: ./.github/actions/tflint
+
+#   terraform:
+#     name: Terraform Init / Validate / Plan
+#     runs-on: ubuntu-latest
+#     needs: lint
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       # Add cloud auth here if needed (azure/login, aws-actions/configure-aws-credentials, etc.)
+
+#       - name: Terraform Init / Validate / Plan
+#         id: tf
+#         uses: ./.github/actions/terraform-plan
+#         with:
+#           terraform-version: latest
+#           # backend-config: "key=prod.terraform.tfstate"
+#           # var-file: "envs/dev.tfvars"
+
+      - name: Plan summary
+        run: echo "Plan exit code = ${{ steps.tf.outputs.plan-exitcode }}"

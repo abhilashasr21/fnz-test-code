@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 permissions:
-    id-token: write
-    contents: read
-    pull-requests: write
+  id-token: write
+  contents: read
+  pull-requests: write
 
 jobs:
   lint:
@@ -34,10 +34,6 @@ jobs:
 #       - name: Terraform Init / Validate / Plan
 #         id: tf
 #         uses: ./.github/actions/terraform-plan
-#         with:
-#           terraform-version: latest
-#           # backend-config: "key=prod.terraform.tfstate"
-#           # var-file: "envs/dev.tfvars"
 
-      - name: Plan summary
-        run: echo "Plan exit code = ${{ steps.tf.outputs.plan-exitcode }}"
+#       - name: Plan summary
+#         run: echo "Plan exit code = ${{ steps.tf.outputs.plan-exitcode }}"

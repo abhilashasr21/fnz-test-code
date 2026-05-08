@@ -34,10 +34,10 @@ jobs:
           azure-client-id:        ${{ secrets.AZURE_CLIENT_ID }}
           azure-tenant-id:        ${{ secrets.AZURE_TENANT_ID }}
           azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          backend-resource-group:  ${{ vars.TFSTATE_RESOURCE_GROUP }}
-          backend-storage-account: ${{ vars.TFSTATE_STORAGE_ACCOUNT }}
-          backend-container:       ${{ vars.TFSTATE_CONTAINER }}
-          backend-key:             ${{ vars.TFSTATE_KEY }}     # e.g. prod.tfstate
+          backend-resource-group:  "my-tfstate-rg"
+          backend-storage-account: "mytfstateacct2026"
+          backend-container:       "tfstate"
+          backend-key:             "prod.terraform.tfstate"    # e.g. prod.tfstate
 
       - name: Plan summary
         run: echo "Plan exit code = ${{ steps.tf.outputs.plan-exitcode }}"

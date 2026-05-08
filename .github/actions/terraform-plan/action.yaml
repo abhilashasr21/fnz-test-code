@@ -18,6 +18,15 @@ inputs:
     description: "Output file for the generated plan"
     required: false
     default: "tfplan.binary"
+  azure-client-id:
+    description: "Azure client ID for OIDC login"
+    required: true
+  azure-tenant-id:
+    description: "Azure tenant ID for OIDC login"
+    required: true
+  azure-subscription-id:
+    description: "Azure subscription ID for OIDC login"
+    required: true
 
 outputs:
   plan-exitcode:
@@ -48,18 +57,11 @@ runs:
     - name: OIDC Azure Login
       uses: azure/login@v2.3.0
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ inputs.azure-client-id }}
+        tenant-id: ${{ inputs.azure-tenant-id }}
+        subscription-id: ${{ inputs.azure-subscription-id }}
 
     - name: Terraform Plan
       id: plan
       shell: bash
       run: terraform plan
-
-    # - name: Upload plan artifact
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: tfplan-${{ github.run_id }}
-    #     path: ${{ inputs.plan-out }}
-    #     retention-days: 5

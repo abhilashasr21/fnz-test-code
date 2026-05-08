@@ -31,9 +31,13 @@ jobs:
 
       # Add cloud auth here if needed (azure/login, aws-actions/configure-aws-credentials, etc.)
 
-      - name: Terraform Init / Validate / Plan
-        id: tf
+      - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
+        with:
+            terraform-version: latest
+            azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Plan summary
         run: echo "Plan exit code = ${{ steps.tf.outputs.plan-exitcode }}"

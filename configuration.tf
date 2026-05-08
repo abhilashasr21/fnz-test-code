@@ -8,6 +8,13 @@ terraform {
       version = ">= 3.80.0, < 4.0.0"
     }
   }
+
+  backend "azurerm" {
+    resource_group_name  = "my-tfstate-rg"
+    storage_account_name = "mytfstateacct2026"
+    container_name       = "tfstate"
+    key                  = "prod.terraform.tfstate"
+  }
 }
 
 # Configure the Microsoft Azure Provider 

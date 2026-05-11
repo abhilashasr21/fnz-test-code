@@ -81,7 +81,7 @@ module "avm-ptn-alz" {
   source  = "Azure/avm-ptn-alz/azurerm"
   version = "0.19.1"
 
-  location             = var.location
-  architecture_name    = "fnz"   # MUST match "name" in the JSON
-  parent_resource_id   = "48d31bc6-3359-4e9d-af8b-75b9b41ebd66"
+  location           = var.location
+  architecture_name  = "fnz" # MUST match "name" in the JSON
+  parent_resource_id = "48d31bc6-3359-4e9d-af8b-75b9b41ebd66"
 }

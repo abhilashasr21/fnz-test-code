@@ -1,0 +1,89 @@
+name: "Terraform Apply"
+description: "Applies a previously-generated Terraform plan using OIDC auth from the pipeline."
+
+inputs:
+  terraform-version:
+    description: "Terraform version to install"
+    required: false
+    default: "latest"
+  plan-file:
+    description: "Path to the saved plan binary produced by terraform-plan"
+    required: false
+    default: "tfplan.binary"
+
+  # ---- Azure auth (OIDC) ----
+  azure-client-id:
+    description: "Azure client ID (federated app / UAMI) used for OIDC login"
+    required: true
+  azure-tenant-id:
+    description: "Azure tenant ID"
+    required: true
+  azure-subscription-id:
+    description: "Azure subscription ID"
+    required: true
+
+  # ---- Remote backend (azurerm) ----
+  backend-resource-group:
+    description: "Resource group containing the state storage account"
+    required: true
+  backend-storage-account:
+    description: "Storage account holding the Terraform state"
+    required: true
+  backend-container:
+    description: "Blob container holding the Terraform state"
+    required: true
+  backend-key:
+    description: "Blob name (state file key), e.g. prod.tfstate"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform-version }}
+
+    - name: OIDC Azure Login
+      uses: azure/login@v2.3.0
+      with:
+        client-id: ${{ inputs.azure-client-id }}
+        tenant-id: ${{ inputs.azure-tenant-id }}
+        subscription-id: ${{ inputs.azure-subscription-id }}
+
+    # Re-init in this job (different runner than the plan job).
+    - name: Terraform Init
+      shell: bash
+      env:
+        ARM_USE_OIDC: "true"
+        ARM_CLIENT_ID: ${{ inputs.azure-client-id }}
+        ARM_TENANT_ID: ${{ inputs.azure-tenant-id }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.azure-subscription-id }}
+      run: |
+        terraform init -input=false \
+          -backend-config="use_oidc=true" \
+          -backend-config="use_azuread_auth=true" \
+          -backend-config="tenant_id=${{ inputs.azure-tenant-id }}" \
+          -backend-config="subscription_id=${{ inputs.azure-subscription-id }}" \
+          -backend-config="client_id=${{ inputs.azure-client-id }}" \
+          -backend-config="resource_group_name=${{ inputs.backend-resource-group }}" \
+          -backend-config="storage_account_name=${{ inputs.backend-storage-account }}" \
+          -backend-config="container_name=${{ inputs.backend-container }}" \
+          -backend-config="key=${{ inputs.backend-key }}"
+
+    - name: Verify plan file exists
+      shell: bash
+      run: |
+        if [ ! -f "${{ inputs.plan-file }}" ]; then
+          echo "::error::Plan file '${{ inputs.plan-file }}' not found. Did the plan job upload the artifact?"
+          exit 1
+        fi
+
+    - name: Terraform Apply
+      shell: bash
+      env:
+        ARM_USE_OIDC: "true"
+        ARM_CLIENT_ID: ${{ inputs.azure-client-id }}
+        ARM_TENANT_ID: ${{ inputs.azure-tenant-id }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.azure-subscription-id }}
+      run: terraform apply -input=false -auto-approve "${{ inputs.plan-file }}"

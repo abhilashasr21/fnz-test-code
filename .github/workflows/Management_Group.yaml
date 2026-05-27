@@ -141,6 +141,10 @@ jobs:
        with:
          name: tfplan-${{ env.CUSTID }}
          path: tenant
+
+     - name: Logout
+       working-directory: tenant
+       run: az logout
      
      - name: Azure Login (OIDC)
        uses: azure/login@v3

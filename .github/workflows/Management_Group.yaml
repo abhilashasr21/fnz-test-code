@@ -127,6 +127,7 @@ jobs:
          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
 
      - name: Terraform init
+       working-directory: tenant
        run: terraform init -backend=false -upgrade       
 
      - name: Terraform Apply

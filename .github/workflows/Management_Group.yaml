@@ -7,22 +7,6 @@ on:
         description: 'Customer name (folder name in tenant directory)'
         required: true
         type: string
-      planGitHubEnvironment:
-        description: 'GitHub Environment for Planning'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-      deployGitHubEnvironment:
-        description: 'GitHub Environment for Deployment'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
 
 permissions:
   id-token: write
@@ -30,11 +14,10 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: Management Group - ${{ github.event.inputs.customer_name }}-${{ github.event.inputs.deployGitHubEnvironment }}
+  group: Management Group - ${{ github.event.inputs.customer_name }}
   cancel-in-progress: false
 
 env:
-  DEPLOY_ENV: ${{ github.event.inputs.planGitHubEnvironment }}
   CUSTID: ${{ github.event.inputs.customer_name }}
   CUSTOMER_FOLDER: tenant/mgmt/${{ github.event.inputs.customer_name }}
 
@@ -86,10 +69,6 @@ jobs:
           echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscription_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
           echo "AZURE_CLIENT_ID=$(jq -r '.client_id' "$CONFIG_FILE")" >> "$GITHUB_ENV"
 
-      # - name: Set Env Vars
-      #   run: |
-      #     echo "TF_VAR_environment=${{ env.DEPLOY_ENV }}" >> $GITHUB_ENV
-
       - name: Azure Login (OIDC)
         uses: azure/login@v3
         with:
@@ -124,8 +103,6 @@ jobs:
   Deploy:
    needs: RunCustomerFolder
    runs-on: ubuntu-latest
-   environment: ${{ github.event.inputs.deployGitHubEnvironment }}
-
 
    steps:
      - name: Checkout code

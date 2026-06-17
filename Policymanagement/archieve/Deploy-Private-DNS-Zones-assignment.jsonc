@@ -1,0 +1,122 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "targetManagementGroupIds": {
+      "type": "array",
+      "defaultValue": [ "mg-prod" ],
+      "metadata": {
+        "description": "List of management group IDs to assign the initiative to. One assignment is created per MG."
+      }
+    },
+    "policySetDefinitionManagementGroupId": {
+      "type": "string",
+      "defaultValue": "mg-fnz-root",
+      "metadata": {
+        "description": "MG where the Deploy-Private-DNS-Zones policySetDefinition lives. Must be an ancestor of every targetManagementGroupIds entry (or the same MG)."
+      }
+    },
+    "dnsZoneSubscriptionId":      { "type": "string", "defaultValue": "f4a270f4-c469-4215-bef6-b4abaea6815e" },
+    "dnsZoneResourceGroupName":   { "type": "string", "defaultValue": "private-dns-zone" },
+    "dnsZoneRegion":              { "type": "string", "defaultValue": "westeurope" },
+    "managedIdentityLocation":    { "type": "string", "defaultValue": "westeurope" },
+    "effect":                     { "type": "string", "defaultValue": "DeployIfNotExists",
+                                    "allowedValues": [ "DeployIfNotExists", "Disabled" ] },
+    "effect1":                    { "type": "string", "defaultValue": "deployIfNotExists",
+                                    "allowedValues": [ "deployIfNotExists", "Disabled" ] }
+  },
+  "variables": {
+    "policySetDefinitionId": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('policySetDefinitionManagementGroupId'), '/providers/Microsoft.Authorization/policySetDefinitions/Deploy-Private-DNS-Zones')]"
+  },
+  "resources": [
+    {
+      // One nested MG-scoped deployment per target MG
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[concat('assign-dns-', parameters('targetManagementGroupIds')[copyIndex()])]",
+      "location": "[parameters('managedIdentityLocation')]",
+      "scope": "[concat('Microsoft.Management/managementGroups/', parameters('targetManagementGroupIds')[copyIndex()])]",
+      "copy": {
+        "name": "mgAssignmentLoop",
+        "count": "[length(parameters('targetManagementGroupIds'))]"
+      },
+      "properties": {
+        "expressionEvaluationOptions": { "scope": "inner" },
+        "mode": "Incremental",
+        "parameters": {
+          "targetManagementGroupId":  { "value": "[parameters('targetManagementGroupIds')[copyIndex()]]" },
+          "policySetDefinitionId":    { "value": "[variables('policySetDefinitionId')]" },
+          "dnsZoneSubscriptionId":    { "value": "[parameters('dnsZoneSubscriptionId')]" },
+          "dnsZoneResourceGroupName": { "value": "[parameters('dnsZoneResourceGroupName')]" },
+          "dnsZoneRegion":            { "value": "[parameters('dnsZoneRegion')]" },
+          "managedIdentityLocation":  { "value": "[parameters('managedIdentityLocation')]" },
+          "effect":                   { "value": "[parameters('effect')]" },
+          "effect1":                  { "value": "[parameters('effect1')]" }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "targetManagementGroupId":  { "type": "string" },
+            "policySetDefinitionId":    { "type": "string" },
+            "dnsZoneSubscriptionId":    { "type": "string" },
+            "dnsZoneResourceGroupName": { "type": "string" },
+            "dnsZoneRegion":            { "type": "string" },
+            "managedIdentityLocation":  { "type": "string" },
+            "effect":                   { "type": "string" },
+            "effect1":                  { "type": "string" }
+          },
+          "variables": {
+            "mgResourceId": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('targetManagementGroupId'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/policyAssignments",
+              "apiVersion": "2023-04-01",
+              "name": "Deploy-Private-DNS-Zones",
+              "location": "[parameters('managedIdentityLocation')]",
+              "identity": { "type": "SystemAssigned" },
+              "properties": {
+                "displayName": "Configure Azure PaaS services to use private DNS zones",
+                "description": "Ensures private endpoints are integrated with Private DNS zones.",
+                "policyDefinitionId": "[parameters('policySetDefinitionId')]",
+                "scope": "[variables('mgResourceId')]",
+                "enforcementMode": "Default",
+                "parameters": {
+                  "dnsZoneSubscriptionId":     { "value": "[parameters('dnsZoneSubscriptionId')]" },
+                  "dnsZoneResourceGroupName":  { "value": "[parameters('dnsZoneResourceGroupName')]" },
+                  "dnsZoneResourceType":       { "value": "Microsoft.Network/privateDnsZones" },
+                  "dnsZoneRegion":             { "value": "[parameters('dnsZoneRegion')]" },
+                  "effect":                    { "value": "[parameters('effect')]" },
+                  "effect1":                   { "value": "[parameters('effect1')]" }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid('Deploy-Private-DNS-Zones-NetworkContributor', variables('mgResourceId'))]",
+              "dependsOn": [ "[resourceId('Microsoft.Authorization/policyAssignments', 'Deploy-Private-DNS-Zones')]" ],
+              "properties": {
+                "roleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', 'Deploy-Private-DNS-Zones'), '2023-04-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid('Deploy-Private-DNS-Zones-PrivateDNSContributor', variables('mgResourceId'))]",
+              "dependsOn": [ "[resourceId('Microsoft.Authorization/policyAssignments', 'Deploy-Private-DNS-Zones')]" ],
+              "properties": {
+                "roleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/b12aa53e-6015-4669-85d0-8515ebb3ae7f",
+                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', 'Deploy-Private-DNS-Zones'), '2023-04-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

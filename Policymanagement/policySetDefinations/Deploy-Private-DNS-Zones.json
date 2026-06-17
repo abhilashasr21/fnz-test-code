@@ -1737,16 +1737,16 @@
           "definitionVersion": "1.*.*-preview",
           "parameters": {
             "privateDnsZone-Backup": {
-              "value": "[[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureSiteRecoveryBackupPrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureSiteRecoveryBackupPrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
+              "value": "[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureSiteRecoveryBackupPrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureSiteRecoveryBackupPrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
             },
             "privateDnsZone-Blob": {
-              "value": "[[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureSiteRecoveryBlobPrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureSiteRecoveryBlobPrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
+              "value": "[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureSiteRecoveryBlobPrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureSiteRecoveryBlobPrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
             },
             "privateDnsZone-Queue": {
-              "value": "[[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureSiteRecoveryQueuePrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureSiteRecoveryQueuePrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
+              "value": "[if(equals(parameters('dnsZoneSubscriptionId'), ''), parameters('azureSiteRecoveryQueuePrivateDnsZoneId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}', parameters('dnsZoneSubscriptionId'), toLower(parameters('dnsZoneResourceGroupName')), parameters('dnsZoneResourceType'), replace(replace(parameters('dnsZoneNames').azureSiteRecoveryQueuePrivateDnsZoneId, '{regionName}', parameters('dnsZoneRegion')), '{regionCode}', parameters('dnzZoneRegionShortNames')[parameters('dnsZoneRegion')])))]"
             },
             "effect": {
-              "value": "[[parameters('effect')]"
+              "value": "[parameters('effect')]"
             }
           }
         }

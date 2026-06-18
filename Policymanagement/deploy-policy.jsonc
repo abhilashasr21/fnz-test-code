@@ -1,4 +1,6 @@
 {
+  "name": "Deploy-DNS-Zone",
+  "$schema": "Microsoft.Authorization/policyDefinitions",
   "properties": {
     "displayName": "Deploy DNS Zone",
     "description": "Deploy DNS Zone",

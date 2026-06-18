@@ -1,0 +1,1549 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/policy-assignment-schema.json",
+    "nodeName": "/Network/",
+    "definitionEntry": {
+        "policyName": "Deploy-DNS-Zone",
+        "displayName": "Deploy DNS Zone"
+    },
+    "assignment": {
+        "name": "Deploy-DNS-Zone",                                                  //24 Character limit must be unique
+        "displayName": "Deploy DNS Zone",
+        "description": "Deploy DNS Zone for private endpoints by linking them to existing private DNS zones."
+    },
+    "enforcementMode": "Default",
+    "managedIdentityLocations": {
+        "*": "westeurope"
+    },
+    "scope": {
+        "fnzmgmtdev001-prod": [
+            "/providers/Microsoft.Management/managementGroups/mgt100000"
+        ]
+    },
+    "children": [
+        {
+            "nodeName": "amlworkspace/",
+            "assignment": {
+                "name": "DDZ-amlworkspace",
+                "displayName": "Deploy DNS Zone - Azure Machine Learning (amlworkspace)",
+                "description": "Microsoft.MachineLearningServices/workspaces - amlworkspace"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.MachineLearningServices/workspaces",
+                "privateEndpointGroupId": "amlworkspace",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.api.azureml.ms",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.notebooks.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "amlregistry/",
+            "assignment": {
+                "name": "DDZ-amlregistry",
+                "displayName": "Deploy DNS Zone - Azure ML Registry (amlregistry)",
+                "description": "Microsoft.MachineLearningServices/registries - amlregistry"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.MachineLearningServices/registries",
+                "privateEndpointGroupId": "amlregistry",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.api.azureml.ms"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cogsvc-account/",
+            "assignment": {
+                "name": "DDZ-cogsvc-account",
+                "displayName": "Deploy DNS Zone - Azure AI services (account)",
+                "description": "Microsoft.CognitiveServices/accounts - account"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.CognitiveServices/accounts",
+                "privateEndpointGroupId": "account",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.cognitiveservices.azure.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.openai.azure.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.services.ai.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "bot-Bot/",
+            "assignment": {
+                "name": "DDZ-bot-Bot",
+                "displayName": "Deploy DNS Zone - Azure Bot Service (Bot)",
+                "description": "Microsoft.BotService/botServices - Bot"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.BotService/botServices",
+                "privateEndpointGroupId": "Bot",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.directline.botframework.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "bot-Token/",
+            "assignment": {
+                "name": "DDZ-bot-Token",
+                "displayName": "Deploy DNS Zone - Azure Bot Service (Token)",
+                "description": "Microsoft.BotService/botServices - Token"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.BotService/botServices",
+                "privateEndpointGroupId": "Token",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.token.botframework.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "synapse-Sql/",
+            "assignment": {
+                "name": "DDZ-synapse-Sql",
+                "displayName": "Deploy DNS Zone - Azure Synapse Analytics (Sql)",
+                "description": "Microsoft.Synapse/workspaces - Sql"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Synapse/workspaces",
+                "privateEndpointGroupId": "Sql",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.sql.azuresynapse.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "synapse-SqlOnDemand/",
+            "assignment": {
+                "name": "DDZ-synapse-SqlOnDemand",
+                "displayName": "Deploy DNS Zone - Azure Synapse Analytics (SqlOnDemand)",
+                "description": "Microsoft.Synapse/workspaces - SqlOnDemand"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Synapse/workspaces",
+                "privateEndpointGroupId": "SqlOnDemand",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.sql.azuresynapse.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "synapse-Dev/",
+            "assignment": {
+                "name": "DDZ-synapse-Dev",
+                "displayName": "Deploy DNS Zone - Azure Synapse Analytics (Dev)",
+                "description": "Microsoft.Synapse/workspaces - Dev"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Synapse/workspaces",
+                "privateEndpointGroupId": "Dev",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.dev.azuresynapse.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "synapse-Web/",
+            "assignment": {
+                "name": "DDZ-synapse-Web",
+                "displayName": "Deploy DNS Zone - Azure Synapse Studio (Web)",
+                "description": "Microsoft.Synapse/privateLinkHubs - Web"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Synapse/privateLinkHubs",
+                "privateEndpointGroupId": "Web",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azuresynapse.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "eventhub/",
+            "assignment": {
+                "name": "DDZ-eventhub",
+                "displayName": "Deploy DNS Zone - Azure Event Hubs (namespace)",
+                "description": "Microsoft.EventHub/namespaces - namespace"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.EventHub/namespaces",
+                "privateEndpointGroupId": "namespace",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.servicebus.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "servicebus/",
+            "assignment": {
+                "name": "DDZ-servicebus",
+                "displayName": "Deploy DNS Zone - Azure Service Bus (namespace)",
+                "description": "Microsoft.ServiceBus/namespaces - namespace"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.ServiceBus/namespaces",
+                "privateEndpointGroupId": "namespace",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.servicebus.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "datafactory/",
+            "assignment": {
+                "name": "DDZ-datafactory",
+                "displayName": "Deploy DNS Zone - Azure Data Factory (dataFactory)",
+                "description": "Microsoft.DataFactory/factories - dataFactory"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DataFactory/factories",
+                "privateEndpointGroupId": "dataFactory",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.datafactory.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "datafactory-portal/",
+            "assignment": {
+                "name": "DDZ-datafactory-portal",
+                "displayName": "Deploy DNS Zone - Azure Data Factory (portal)",
+                "description": "Microsoft.DataFactory/factories - portal"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DataFactory/factories",
+                "privateEndpointGroupId": "portal",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.adf.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "hdinsight-gateway/",
+            "assignment": {
+                "name": "DDZ-hdinsight-gateway",
+                "displayName": "Deploy DNS Zone - Azure HDInsight (gateway)",
+                "description": "Microsoft.HDInsight/clusters - gateway"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.HDInsight/clusters",
+                "privateEndpointGroupId": "gateway",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azurehdinsight.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "hdinsight-headnode/",
+            "assignment": {
+                "name": "DDZ-hdinsight-headnode",
+                "displayName": "Deploy DNS Zone - Azure HDInsight (headnode)",
+                "description": "Microsoft.HDInsight/clusters - headnode"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.HDInsight/clusters",
+                "privateEndpointGroupId": "headnode",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azurehdinsight.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "kusto/",
+            "assignment": {
+                "name": "DDZ-kusto",
+                "displayName": "Deploy DNS Zone - Azure Data Explorer (cluster)",
+                "description": "Microsoft.Kusto/Clusters - cluster"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Kusto/Clusters",
+                "privateEndpointGroupId": "cluster",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.queue.core.windows.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.table.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "powerbi/",
+            "assignment": {
+                "name": "DDZ-powerbi",
+                "displayName": "Deploy DNS Zone - Microsoft PowerBI (tenant)",
+                "description": "Microsoft.PowerBI/privateLinkServicesForPowerBI - tenant"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.PowerBI/privateLinkServicesForPowerBI",
+                "privateEndpointGroupId": "tenant",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.analysis.windows.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.pbidedicated.windows.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.tip1.powerquery.microsoft.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "databricks-ui/",
+            "assignment": {
+                "name": "DDZ-databricks-ui",
+                "displayName": "Deploy DNS Zone - Azure Databricks (databricks_ui_api)",
+                "description": "Microsoft.Databricks/workspaces - databricks_ui_api"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Databricks/workspaces",
+                "privateEndpointGroupId": "databricks_ui_api",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azuredatabricks.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "databricks-browser/",
+            "assignment": {
+                "name": "DDZ-databricks-browser",
+                "displayName": "Deploy DNS Zone - Azure Databricks (browser_authentication)",
+                "description": "Microsoft.Databricks/workspaces - browser_authentication"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Databricks/workspaces",
+                "privateEndpointGroupId": "browser_authentication",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azuredatabricks.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "batch-account/",
+            "assignment": {
+                "name": "DDZ-batch-account",
+                "displayName": "Deploy DNS Zone - Azure Batch (batchAccount)",
+                "description": "Microsoft.Batch/batchAccounts - batchAccount"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Batch/batchAccounts",
+                "privateEndpointGroupId": "batchAccount",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.batch.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "batch-nodeMgmt/",
+            "assignment": {
+                "name": "DDZ-batch-nodeMgmt",
+                "displayName": "Deploy DNS Zone - Azure Batch (nodeManagement)",
+                "description": "Microsoft.Batch/batchAccounts - nodeManagement"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Batch/batchAccounts",
+                "privateEndpointGroupId": "nodeManagement",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.batch.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "avd-ws-global/",
+            "assignment": {
+                "name": "DDZ-avd-ws-global",
+                "displayName": "Deploy DNS Zone - Azure Virtual Desktop (workspaces-global)",
+                "description": "Microsoft.DesktopVirtualization/workspaces - global"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DesktopVirtualization/workspaces",
+                "privateEndpointGroupId": "global",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink-global.wvd.microsoft.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "avd-ws-feed/",
+            "assignment": {
+                "name": "DDZ-avd-ws-feed",
+                "displayName": "Deploy DNS Zone - Azure Virtual Desktop (workspaces-feed)",
+                "description": "Microsoft.DesktopVirtualization/workspaces - feed"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DesktopVirtualization/workspaces",
+                "privateEndpointGroupId": "feed",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.wvd.microsoft.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "avd-hp-connection/",
+            "assignment": {
+                "name": "DDZ-avd-hp-connection",
+                "displayName": "Deploy DNS Zone - Azure Virtual Desktop (hostpools-connection)",
+                "description": "Microsoft.DesktopVirtualization/hostpools - connection"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DesktopVirtualization/hostpools",
+                "privateEndpointGroupId": "connection",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.wvd.microsoft.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "acr/",
+            "assignment": {
+                "name": "DDZ-acr",
+                "displayName": "Deploy DNS Zone - Azure Container Registry (registry)",
+                "description": "Microsoft.ContainerRegistry/registries - registry"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.ContainerRegistry/registries",
+                "privateEndpointGroupId": "registry",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azurecr.io"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "sqlserver/",
+            "assignment": {
+                "name": "DDZ-sqlserver",
+                "displayName": "Deploy DNS Zone - Azure SQL Database (sqlServer)",
+                "description": "Microsoft.Sql/servers - sqlServer"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Sql/servers",
+                "privateEndpointGroupId": "sqlServer",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.database.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cosmos-Sql/",
+            "assignment": {
+                "name": "DDZ-cosmos-Sql",
+                "displayName": "Deploy DNS Zone - Azure Cosmos DB (Sql)",
+                "description": "Microsoft.DocumentDB/databaseAccounts - Sql"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DocumentDB/databaseAccounts",
+                "privateEndpointGroupId": "Sql",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.documents.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cosmos-MongoDB/",
+            "assignment": {
+                "name": "DDZ-cosmos-MongoDB",
+                "displayName": "Deploy DNS Zone - Azure Cosmos DB (MongoDB)",
+                "description": "Microsoft.DocumentDB/databaseAccounts - MongoDB"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DocumentDB/databaseAccounts",
+                "privateEndpointGroupId": "MongoDB",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.mongo.cosmos.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cosmos-Cassandra/",
+            "assignment": {
+                "name": "DDZ-cosmos-Cassandra",
+                "displayName": "Deploy DNS Zone - Azure Cosmos DB (Cassandra)",
+                "description": "Microsoft.DocumentDB/databaseAccounts - Cassandra"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DocumentDB/databaseAccounts",
+                "privateEndpointGroupId": "Cassandra",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.cassandra.cosmos.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cosmos-Gremlin/",
+            "assignment": {
+                "name": "DDZ-cosmos-Gremlin",
+                "displayName": "Deploy DNS Zone - Azure Cosmos DB (Gremlin)",
+                "description": "Microsoft.DocumentDB/databaseAccounts - Gremlin"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DocumentDB/databaseAccounts",
+                "privateEndpointGroupId": "Gremlin",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.gremlin.cosmos.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cosmos-Table/",
+            "assignment": {
+                "name": "DDZ-cosmos-Table",
+                "displayName": "Deploy DNS Zone - Azure Cosmos DB (Table)",
+                "description": "Microsoft.DocumentDB/databaseAccounts - Table"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DocumentDB/databaseAccounts",
+                "privateEndpointGroupId": "Table",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.table.cosmos.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cosmos-Analytical/",
+            "assignment": {
+                "name": "DDZ-cosmos-Analytical",
+                "displayName": "Deploy DNS Zone - Azure Cosmos DB (Analytical)",
+                "description": "Microsoft.DocumentDB/databaseAccounts - Analytical"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DocumentDB/databaseAccounts",
+                "privateEndpointGroupId": "Analytical",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.analytics.cosmos.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "cosmos-pg-coord/",
+            "assignment": {
+                "name": "DDZ-cosmos-pg-coord",
+                "displayName": "Deploy DNS Zone - Cosmos DB for PostgreSQL (coordinator)",
+                "description": "Microsoft.DBforPostgreSQL/serverGroupsv2 - coordinator"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DBforPostgreSQL/serverGroupsv2",
+                "privateEndpointGroupId": "coordinator",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.cosmos.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "pgsql/",
+            "assignment": {
+                "name": "DDZ-pgsql",
+                "displayName": "Deploy DNS Zone - Azure Database for PostgreSQL",
+                "description": "Microsoft.DBforPostgreSQL/servers - postgresqlServer"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DBforPostgreSQL/servers",
+                "privateEndpointGroupId": "postgresqlServer",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "pgsql-flex/",
+            "assignment": {
+                "name": "DDZ-pgsql-flex",
+                "displayName": "Deploy DNS Zone - Azure DB for PostgreSQL Flexible",
+                "description": "Microsoft.DBforPostgreSQL/flexibleServers - postgresqlServer"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DBforPostgreSQL/flexibleServers",
+                "privateEndpointGroupId": "postgresqlServer",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "mysql/",
+            "assignment": {
+                "name": "DDZ-mysql",
+                "displayName": "Deploy DNS Zone - Azure Database for MySQL",
+                "description": "Microsoft.DBforMySQL/servers - mysqlServer"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DBforMySQL/servers",
+                "privateEndpointGroupId": "mysqlServer",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.mysql.database.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "mysql-flex/",
+            "assignment": {
+                "name": "DDZ-mysql-flex",
+                "displayName": "Deploy DNS Zone - Azure DB for MySQL Flexible",
+                "description": "Microsoft.DBforMySQL/flexibleServers - mysqlServer"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DBforMySQL/flexibleServers",
+                "privateEndpointGroupId": "mysqlServer",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.mysql.database.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "mariadb/",
+            "assignment": {
+                "name": "DDZ-mariadb",
+                "displayName": "Deploy DNS Zone - Azure Database for MariaDB",
+                "description": "Microsoft.DBforMariaDB/servers - mariadbServer"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DBforMariaDB/servers",
+                "privateEndpointGroupId": "mariadbServer",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "redis/",
+            "assignment": {
+                "name": "DDZ-redis",
+                "displayName": "Deploy DNS Zone - Azure Cache for Redis (redisCache)",
+                "description": "Microsoft.Cache/Redis - redisCache"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Cache/Redis",
+                "privateEndpointGroupId": "redisCache",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.redis.cache.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "redis-ent/",
+            "assignment": {
+                "name": "DDZ-redis-ent",
+                "displayName": "Deploy DNS Zone - Azure Cache for Redis Enterprise",
+                "description": "Microsoft.Cache/RedisEnterprise - redisEnterprise"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Cache/RedisEnterprise",
+                "privateEndpointGroupId": "redisEnterprise",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.redisenterprise.cache.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "arc/",
+            "assignment": {
+                "name": "DDZ-arc",
+                "displayName": "Deploy DNS Zone - Azure Arc (hybridcompute)",
+                "description": "Microsoft.HybridCompute/privateLinkScopes - hybridcompute"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.HybridCompute/privateLinkScopes",
+                "privateEndpointGroupId": "hybridcompute",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.his.arc.azure.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.guestconfiguration.azure.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.dp.kubernetesconfiguration.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "relay/",
+            "assignment": {
+                "name": "DDZ-relay",
+                "displayName": "Deploy DNS Zone - Azure Relay (namespace)",
+                "description": "Microsoft.Relay/namespaces - namespace"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Relay/namespaces",
+                "privateEndpointGroupId": "namespace",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.servicebus.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "eventgrid-topic/",
+            "assignment": {
+                "name": "DDZ-eg-topic",
+                "displayName": "Deploy DNS Zone - Azure Event Grid (topic)",
+                "description": "Microsoft.EventGrid/topics - topic"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.EventGrid/topics",
+                "privateEndpointGroupId": "topic",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.eventgrid.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "eventgrid-domain/",
+            "assignment": {
+                "name": "DDZ-eg-domain",
+                "displayName": "Deploy DNS Zone - Azure Event Grid (domain)",
+                "description": "Microsoft.EventGrid/domains - domain"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.EventGrid/domains",
+                "privateEndpointGroupId": "domain",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.eventgrid.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "eventgrid-ns-topic/",
+            "assignment": {
+                "name": "DDZ-eg-ns-topic",
+                "displayName": "Deploy DNS Zone - Azure Event Grid (namespaces-topic)",
+                "description": "Microsoft.EventGrid/namespaces - topic"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.EventGrid/namespaces",
+                "privateEndpointGroupId": "topic",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.eventgrid.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "eventgrid-ns-ts/",
+            "assignment": {
+                "name": "DDZ-eg-ns-ts",
+                "displayName": "Deploy DNS Zone - Azure Event Grid (namespaces-topicSpace)",
+                "description": "Microsoft.EventGrid/namespaces - topicSpace"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.EventGrid/namespaces",
+                "privateEndpointGroupId": "topicSpace",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.ts.eventgrid.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "eventgrid-pn/",
+            "assignment": {
+                "name": "DDZ-eg-pn",
+                "displayName": "Deploy DNS Zone - Azure Event Grid (partnerNamespaces)",
+                "description": "Microsoft.EventGrid/partnerNamespaces - partnernamespace"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.EventGrid/partnerNamespaces",
+                "privateEndpointGroupId": "partnernamespace",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.eventgrid.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "apim/",
+            "assignment": {
+                "name": "DDZ-apim",
+                "displayName": "Deploy DNS Zone - Azure API Management (gateway)",
+                "description": "Microsoft.ApiManagement/service - gateway"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.ApiManagement/service",
+                "privateEndpointGroupId": "gateway",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure-api.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "health-data/",
+            "assignment": {
+                "name": "DDZ-health-data",
+                "displayName": "Deploy DNS Zone - Azure Health Data Services",
+                "description": "Microsoft.HealthcareApis/workspaces - healthcareworkspace"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.HealthcareApis/workspaces",
+                "privateEndpointGroupId": "healthcareworkspace",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azurehealthcareapis.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.dicom.azurehealthcareapis.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "iothub/",
+            "assignment": {
+                "name": "DDZ-iothub",
+                "displayName": "Deploy DNS Zone - Azure IoT Hub (iotHub)",
+                "description": "Microsoft.Devices/IotHubs - iotHub"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Devices/IotHubs",
+                "privateEndpointGroupId": "iotHub",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure-devices.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.servicebus.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "iotdps/",
+            "assignment": {
+                "name": "DDZ-iotdps",
+                "displayName": "Deploy DNS Zone - IoT Hub Device Provisioning Service",
+                "description": "Microsoft.Devices/ProvisioningServices - iotDps"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Devices/ProvisioningServices",
+                "privateEndpointGroupId": "iotDps",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure-devices-provisioning.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "device-update/",
+            "assignment": {
+                "name": "DDZ-device-update",
+                "displayName": "Deploy DNS Zone - Device Update for IoT Hubs",
+                "description": "Microsoft.DeviceUpdate/accounts - DeviceUpdate"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DeviceUpdate/accounts",
+                "privateEndpointGroupId": "DeviceUpdate",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.api.adu.microsoft.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "iotcentral/",
+            "assignment": {
+                "name": "DDZ-iotcentral",
+                "displayName": "Deploy DNS Zone - Azure IoT Central (iotApp)",
+                "description": "Microsoft.IoTCentral/IoTApps - iotApp"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.IoTCentral/IoTApps",
+                "privateEndpointGroupId": "iotApp",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azureiotcentral.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure-devices.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.servicebus.windows.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure-devices-provisioning.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "digital-twins/",
+            "assignment": {
+                "name": "DDZ-digital-twins",
+                "displayName": "Deploy DNS Zone - Azure Digital Twins (API)",
+                "description": "Microsoft.DigitalTwins/digitalTwinsInstances - API"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.DigitalTwins/digitalTwinsInstances",
+                "privateEndpointGroupId": "API",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.digitaltwins.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "media-keydelivery/",
+            "assignment": {
+                "name": "DDZ-media-keydeliv",
+                "displayName": "Deploy DNS Zone - Azure Media Services (keydelivery)",
+                "description": "Microsoft.Media/mediaservices - keydelivery"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Media/mediaservices",
+                "privateEndpointGroupId": "keydelivery",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.media.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "media-liveevent/",
+            "assignment": {
+                "name": "DDZ-media-liveevent",
+                "displayName": "Deploy DNS Zone - Azure Media Services (liveevent)",
+                "description": "Microsoft.Media/mediaservices - liveevent"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Media/mediaservices",
+                "privateEndpointGroupId": "liveevent",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.media.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "media-streaming/",
+            "assignment": {
+                "name": "DDZ-media-streaming",
+                "displayName": "Deploy DNS Zone - Azure Media Services (streamingendpoint)",
+                "description": "Microsoft.Media/mediaservices - streamingendpoint"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Media/mediaservices",
+                "privateEndpointGroupId": "streamingendpoint",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.media.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "automation-webhook/",
+            "assignment": {
+                "name": "DDZ-auto-webhook",
+                "displayName": "Deploy DNS Zone - Azure Automation (Webhook)",
+                "description": "Microsoft.Automation/automationAccounts - Webhook"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Automation/automationAccounts",
+                "privateEndpointGroupId": "Webhook",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure-automation.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "automation-dsc/",
+            "assignment": {
+                "name": "DDZ-auto-dsc",
+                "displayName": "Deploy DNS Zone - Azure Automation (DSCAndHybridWorker)",
+                "description": "Microsoft.Automation/automationAccounts - DSCAndHybridWorker"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Automation/automationAccounts",
+                "privateEndpointGroupId": "DSCAndHybridWorker",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure-automation.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "backup/",
+            "assignment": {
+                "name": "DDZ-backup",
+                "displayName": "Deploy DNS Zone - Azure Backup (AzureBackup)",
+                "description": "Microsoft.RecoveryServices/vaults - AzureBackup"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.RecoveryServices/vaults",
+                "privateEndpointGroupId": "AzureBackup",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.queue.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "backup-secondary/",
+            "assignment": {
+                "name": "DDZ-backup-secondary",
+                "displayName": "Deploy DNS Zone - Azure Backup (AzureBackup_secondary)",
+                "description": "Microsoft.RecoveryServices/vaults - AzureBackup_secondary"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.RecoveryServices/vaults",
+                "privateEndpointGroupId": "AzureBackup_secondary",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.queue.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "asr/",
+            "assignment": {
+                "name": "DDZ-asr",
+                "displayName": "Deploy DNS Zone - Azure Site Recovery",
+                "description": "Microsoft.RecoveryServices/vaults - AzureSiteRecovery"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.RecoveryServices/vaults",
+                "privateEndpointGroupId": "AzureSiteRecovery",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.siterecovery.windowsazure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "monitor/",
+            "assignment": {
+                "name": "DDZ-monitor",
+                "displayName": "Deploy DNS Zone - Azure Monitor (azuremonitor)",
+                "description": "Microsoft.Insights/privateLinkScopes - azuremonitor"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Insights/privateLinkScopes",
+                "privateEndpointGroupId": "azuremonitor",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.monitor.azure.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.oms.opinsights.azure.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.ods.opinsights.azure.com",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.agentsvc.azure-automation.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "purview-account/",
+            "assignment": {
+                "name": "DDZ-purview-account",
+                "displayName": "Deploy DNS Zone - Microsoft Purview (account)",
+                "description": "Microsoft.Purview/accounts - account"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Purview/accounts",
+                "privateEndpointGroupId": "account",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.purview.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "purview-portal/",
+            "assignment": {
+                "name": "DDZ-purview-portal",
+                "displayName": "Deploy DNS Zone - Microsoft Purview (portal)",
+                "description": "Microsoft.Purview/accounts - portal"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Purview/accounts",
+                "privateEndpointGroupId": "portal",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.purviewstudio.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "purview-platform/",
+            "assignment": {
+                "name": "DDZ-purview-platform",
+                "displayName": "Deploy DNS Zone - Microsoft Purview (platform)",
+                "description": "Microsoft.Purview/accounts - platform"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Purview/accounts",
+                "privateEndpointGroupId": "platform",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.purview-service.microsoft.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "migrate-mp/",
+            "assignment": {
+                "name": "DDZ-migrate-mp",
+                "displayName": "Deploy DNS Zone - Azure Migrate (migrateProjects)",
+                "description": "Microsoft.Migrate/migrateProjects - Default"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Migrate/migrateProjects",
+                "privateEndpointGroupId": "Default",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.prod.migration.windowsazure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "migrate-ap/",
+            "assignment": {
+                "name": "DDZ-migrate-ap",
+                "displayName": "Deploy DNS Zone - Azure Migrate (assessmentProjects)",
+                "description": "Microsoft.Migrate/assessmentProjects - Default"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Migrate/assessmentProjects",
+                "privateEndpointGroupId": "Default",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.prod.migration.windowsazure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "arm/",
+            "assignment": {
+                "name": "DDZ-arm",
+                "displayName": "Deploy DNS Zone - Azure Resource Manager",
+                "description": "Microsoft.Authorization/resourceManagementPrivateLinks - ResourceManagement"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Authorization/resourceManagementPrivateLinks",
+                "privateEndpointGroupId": "ResourceManagement",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "grafana/",
+            "assignment": {
+                "name": "DDZ-grafana",
+                "displayName": "Deploy DNS Zone - Azure Managed Grafana",
+                "description": "Microsoft.Dashboard/grafana - grafana"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Dashboard/grafana",
+                "privateEndpointGroupId": "grafana",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.grafana.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "keyvault/",
+            "assignment": {
+                "name": "DDZ-keyvault",
+                "displayName": "Deploy DNS Zone - Azure Key Vault (vault)",
+                "description": "Microsoft.KeyVault/vaults - vault"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.KeyVault/vaults",
+                "privateEndpointGroupId": "vault",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.vaultcore.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "keyvault-hsm/",
+            "assignment": {
+                "name": "DDZ-keyvault-hsm",
+                "displayName": "Deploy DNS Zone - Azure Key Vault (managedHSM)",
+                "description": "Microsoft.KeyVault/managedHSMs - managedHSM"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.KeyVault/managedHSMs",
+                "privateEndpointGroupId": "managedHSM",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.managedhsm.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "appconfig/",
+            "assignment": {
+                "name": "DDZ-appconfig",
+                "displayName": "Deploy DNS Zone - Azure App Configuration",
+                "description": "Microsoft.AppConfiguration/configurationStores - configurationStores"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.AppConfiguration/configurationStores",
+                "privateEndpointGroupId": "configurationStores",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azconfig.io"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "attestation/",
+            "assignment": {
+                "name": "DDZ-attestation",
+                "displayName": "Deploy DNS Zone - Azure Attestation",
+                "description": "Microsoft.Attestation/attestationProviders - standard"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Attestation/attestationProviders",
+                "privateEndpointGroupId": "standard",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.attest.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-blob/",
+            "assignment": {
+                "name": "DDZ-storage-blob",
+                "displayName": "Deploy DNS Zone - Storage account (blob)",
+                "description": "Microsoft.Storage/storageAccounts - blob"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "blob",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-blob-sec/",
+            "assignment": {
+                "name": "DDZ-storage-blob-sec",
+                "displayName": "Deploy DNS Zone - Storage account (blob_secondary)",
+                "description": "Microsoft.Storage/storageAccounts - blob_secondary"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "blob_secondary",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-table/",
+            "assignment": {
+                "name": "DDZ-storage-table",
+                "displayName": "Deploy DNS Zone - Storage account (table)",
+                "description": "Microsoft.Storage/storageAccounts - table"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "table",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.table.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-table-sec/",
+            "assignment": {
+                "name": "DDZ-storage-table-sec",
+                "displayName": "Deploy DNS Zone - Storage account (table_secondary)",
+                "description": "Microsoft.Storage/storageAccounts - table_secondary"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "table_secondary",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.table.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-queue/",
+            "assignment": {
+                "name": "DDZ-storage-queue",
+                "displayName": "Deploy DNS Zone - Storage account (queue)",
+                "description": "Microsoft.Storage/storageAccounts - queue"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "queue",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.queue.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-queue-sec/",
+            "assignment": {
+                "name": "DDZ-storage-queue-sec",
+                "displayName": "Deploy DNS Zone - Storage account (queue_secondary)",
+                "description": "Microsoft.Storage/storageAccounts - queue_secondary"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "queue_secondary",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.queue.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-file/",
+            "assignment": {
+                "name": "DDZ-storage-file",
+                "displayName": "Deploy DNS Zone - Storage account (file)",
+                "description": "Microsoft.Storage/storageAccounts - file"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "file",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.file.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-web/",
+            "assignment": {
+                "name": "DDZ-storage-web",
+                "displayName": "Deploy DNS Zone - Storage account (web)",
+                "description": "Microsoft.Storage/storageAccounts - web"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "web",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.web.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-web-sec/",
+            "assignment": {
+                "name": "DDZ-storage-web-sec",
+                "displayName": "Deploy DNS Zone - Storage account (web_secondary)",
+                "description": "Microsoft.Storage/storageAccounts - web_secondary"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "web_secondary",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.web.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-dfs/",
+            "assignment": {
+                "name": "DDZ-storage-dfs",
+                "displayName": "Deploy DNS Zone - Storage account (dfs)",
+                "description": "Microsoft.Storage/storageAccounts - dfs"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "dfs",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.dfs.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "storage-dfs-sec/",
+            "assignment": {
+                "name": "DDZ-storage-dfs-sec",
+                "displayName": "Deploy DNS Zone - Storage account (dfs_secondary)",
+                "description": "Microsoft.Storage/storageAccounts - dfs_secondary"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Storage/storageAccounts",
+                "privateEndpointGroupId": "dfs_secondary",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.dfs.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "file-sync/",
+            "assignment": {
+                "name": "DDZ-file-sync",
+                "displayName": "Deploy DNS Zone - Azure File Sync (afs)",
+                "description": "Microsoft.StorageSync/storageSyncServices - afs"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.StorageSync/storageSyncServices",
+                "privateEndpointGroupId": "afs",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.afs.azure.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "disk-access/",
+            "assignment": {
+                "name": "DDZ-disk-access",
+                "displayName": "Deploy DNS Zone - Disk Accesses (disks)",
+                "description": "Microsoft.Compute/diskAccesses - disks"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Compute/diskAccesses",
+                "privateEndpointGroupId": "disks",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "elastic-san/",
+            "assignment": {
+                "name": "DDZ-elastic-san",
+                "displayName": "Deploy DNS Zone - Azure Elastic SAN (volumegroup)",
+                "description": "Microsoft.ElasticSan/elasticSans - volumegroup"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.ElasticSan/elasticSans",
+                "privateEndpointGroupId": "volumegroup",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "azure-files/",
+            "assignment": {
+                "name": "DDZ-azure-files",
+                "displayName": "Deploy DNS Zone - Azure Files (FileShare)",
+                "description": "Microsoft.FileShares/fileShares - FileShare"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.FileShares/fileShares",
+                "privateEndpointGroupId": "FileShare",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.file.core.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "search/",
+            "assignment": {
+                "name": "DDZ-search",
+                "displayName": "Deploy DNS Zone - Azure Search (searchService)",
+                "description": "Microsoft.Search/searchServices - searchService"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Search/searchServices",
+                "privateEndpointGroupId": "searchService",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.search.windows.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "webapp/",
+            "assignment": {
+                "name": "DDZ-webapp",
+                "displayName": "Deploy DNS Zone - Azure Web Apps (sites)",
+                "description": "Microsoft.Web/sites - sites"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Web/sites",
+                "privateEndpointGroupId": "sites",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azurewebsites.net",
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/scm.privatelink.azurewebsites.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "signalr/",
+            "assignment": {
+                "name": "DDZ-signalr",
+                "displayName": "Deploy DNS Zone - SignalR (signalR)",
+                "description": "Microsoft.SignalRService/SignalR - signalR"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.SignalRService/SignalR",
+                "privateEndpointGroupId": "signalR",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.service.signalr.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "static-webapp/",
+            "assignment": {
+                "name": "DDZ-static-webapp",
+                "displayName": "Deploy DNS Zone - Azure Static Web Apps (staticSites)",
+                "description": "Microsoft.Web/staticSites - staticSites"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.Web/staticSites",
+                "privateEndpointGroupId": "staticSites",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.azurestaticapps.net"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        },
+        {
+            "nodeName": "webpubsub/",
+            "assignment": {
+                "name": "DDZ-webpubsub",
+                "displayName": "Deploy DNS Zone - Azure Web PubSub (webpubsub)",
+                "description": "Microsoft.SignalRService/WebPubSub - webpubsub"
+            },
+            "parameters": {
+                "privateEndpointPrivateLinkServiceId": "Microsoft.SignalRService/WebPubSub",
+                "privateEndpointGroupId": "webpubsub",
+                "privateDnsZoneIds": [
+                    "/subscriptions/f4a270f4-c469-4215-bef6-b4abaea6815e/resourceGroups/rg-ctl-vwan-pridns-nprd-laz-01/providers/Microsoft.Network/privateDnsZones/privatelink.webpubsub.azure.com"
+                ],
+                "effect": "DeployIfNotExists"
+            }
+        }
+    ]
+}

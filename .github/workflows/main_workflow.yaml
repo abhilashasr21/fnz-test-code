@@ -19,6 +19,19 @@ jobs:
       - name: Run TFLint
         uses: ./.github/actions/tflint
 
+  approval-gate:
+    name: Checking approval-gate
+    env:
+      tier: test
+      tenant: test-tenant
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approval Confirmation
+        run: |
+          echo "## Deployment Approved" >> "$GITHUB_STEP_SUMMARY"
+          echo "Tier: $TIER" >> "$GITHUB_STEP_SUMMARY"
+          echo "Proceeding with deployment to $TENANT tenant" >> "$GITHUB_STEP_SUMMARY"
+
   terraform:
     name: Terraform Init / Validate / Plan
     runs-on: ubuntu-latest

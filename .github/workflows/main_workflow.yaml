@@ -1,4 +1,4 @@
-name: Terraform CI
+name: Approval-Gate
 on:
   # push:
     # branches: [main]

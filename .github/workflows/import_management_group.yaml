@@ -1,8 +1,5 @@
 name: Import Management Group
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       ResourceBlockName:

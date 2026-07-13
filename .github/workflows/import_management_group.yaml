@@ -7,12 +7,19 @@ on:
         required: false
         type: string
         default: 'management_group_child2'
+      ImportAll:
+        description: 'import all management groups visible to the service principal'
+        required: false
+        type: boolean
+        default: true
       # ManagementGroupId:
       #   description: 'management group id'
+      #   if: ${{ github.event.inputs.ImportAll == 'false' }}
       #   required: true
       #   type: string
       # ImportMap:
       #   description: 'JSON map of {"each_key":"management_group_id"} pairs. Example: {"mg1":"myMg1","mg2":"myMg2"}'
+      #   if: ${{ github.event.inputs.ImportAll == 'false' }}
       #   required: true
       #   type: string
 
@@ -47,6 +54,7 @@ jobs:
               run: terraform init
 
             - name: Discover & Import All Management Groups
+              if: ${{ github.event.inputs.ImportAll == 'true' }}
               working-directory: azapi_mgmt_grp
               env:
                 resource_name: ${{ github.event.inputs.ResourceBlockName }}
@@ -98,30 +106,31 @@ jobs:
                 echo "Imported: $ok_count  Skipped: $skip_count  Failed: $fail_count"
                 [[ $fail_count -eq 0 ]]
 
-            # - name: Terraform Import
-            #   working-directory: azapi_mgmt_grp
-            #   env:
-            #     resource_name: ${{ github.event.inputs.ResourceBlockName }}
-            #     import_map:    ${{ github.event.inputs.ImportMap }}
-            #     api_version:   "2021-04-01"
-            #   run: |
-            #     set -euo pipefail
-            #     set -f
+            - name: Terraform Import
+              if: ${{ github.event.inputs.ImportAll == 'false' }}
+              working-directory: azapi_mgmt_grp
+              env:
+                resource_name: ${{ github.event.inputs.ResourceBlockName }}
+                import_map:    ${{ github.event.inputs.ImportMap }}
+                api_version:   "2021-04-01"
+              run: |
+                set -euo pipefail
+                set -f
 
-            #     echo "Importing azapi_resource.${resource_name}"
+                echo "Importing azapi_resource.${resource_name}"
 
-            #     echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
-            #     while read -r key mg_id; do
-            #       addr="azapi_resource.${resource_name}[\"${key}\"]"
-            #       id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
-            #       echo "----------------------------------------------"
-            #       echo "Importing $addr  <=  $id"
-            #       if terraform state show "$addr" >/dev/null 2>&1; then
-            #         echo "Already in state, skipping."
-            #       else
-            #         terraform import -- "$addr" "$id"
-            #       fi
-            #     done
+                echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
+                while read -r key mg_id; do
+                  addr="azapi_resource.${resource_name}[\"${key}\"]"
+                  id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
+                  echo "----------------------------------------------"
+                  echo "Importing $addr  <=  $id"
+                  if terraform state show "$addr" >/dev/null 2>&1; then
+                    echo "Already in state, skipping."
+                  else
+                    terraform import -- "$addr" "$id"
+                  fi
+                done
             - name: Terraform Plan
               working-directory: azapi_mgmt_grp
               run: terraform plan

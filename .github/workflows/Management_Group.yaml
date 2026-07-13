@@ -31,8 +31,8 @@ jobs:
 
       - name: Initializing Terraform
         uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: ${{ env.DEPLOY_ENV }}
+        # with:
+          # terraform_version: ${{ env.DEPLOY_ENV }}
 
       - name: Validate Customer Folder
         run: |

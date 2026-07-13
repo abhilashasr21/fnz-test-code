@@ -27,19 +27,21 @@ resource "azapi_resource" "management_group_child" {
   }
 }
 
-# resource "azapi_resource" "management_group_child2" {
-#   type      = "Microsoft.Management/managementGroups@2021-04-01"
-#   name      = "mg112"
-#   parent_id = "/"
+resource "azapi_resource" "management_group_children" {
+  for_each = var.child_management_groups
 
-#   body = {
-#     properties = {
-#       displayName = "Terraform Child 2 Management Group"
-#       details = {
-#         parent = {
-#           id = azapi_resource.management_group_parent.id
-#         }
-#       }
-#     }
-#   }
-# }
+  type      = "Microsoft.Management/managementGroups@2021-04-01"
+  name      = each.value.name
+  parent_id = "/"
+
+  body = {
+    properties = {
+      displayName = each.value.display_name
+      details = {
+        parent = {
+          id = azapi_resource.management_group_parent.id
+        }
+      }
+    }
+  }
+}

@@ -10,6 +10,10 @@ on:
         description: 'management group id'
         required: true
         type: string
+      ImportMap:
+        description: 'JSON map of {"each_key":"management_group_id"} pairs. Example: {"mg1":"myMg1","mg2":"myMg2"}'
+        required: true
+        type: string
 
 permissions: 
     id-token: write   # required for OIDC
@@ -27,6 +31,7 @@ jobs:
         env:
           resource_block_name: ${{github.event.inputs.ResourceBlockName}}
           management_group_id: ${{github.event.inputs.ManagementGroupId}}
+          import_map: ${{github.event.inputs.ImportMap}}
 
         steps:
             - name: Checkout Code
@@ -46,7 +51,22 @@ jobs:
 
             - name: Terraform Import Management Group
               working-directory: azapi_mgmt_grp
-              run: terraform import 'azapi_resource.${{env.resource_block_name}}' /providers/Microsoft.Management/managementGroups/${{env.management_group_id}}
+              run: |
+                terraform import 'azapi_resource.${{env.resource_block_name}}' /providers/Microsoft.Management/managementGroups/${{env.management_group_id}}
+                set -euo pipefail
+                echo "Importing resources into address: $resource_address"
+                echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
+                while read -r key mg_id; do
+                  addr="${resource_address}[\"${key}\"]"
+                  id="/providers/Microsoft.Management/managementGroups/${mg_id}"
+                  echo "----------------------------------------------"
+                  echo "Importing $addr  <=  $id"
+                  if terraform state show "$addr" >/dev/null 2>&1; then
+                    echo "Already in state, skipping."
+                  else
+                    terraform import "$addr" "$id"
+                  fi
+                done
 
             - name: Terraform Plan
               working-directory: azapi_mgmt_grp

@@ -4,8 +4,9 @@ on:
     inputs:
       ResourceBlockName:
         description: 'resource block name'
-        required: true
+        required: false
         type: string
+        default: 'management_group_child2'
       # ManagementGroupId:
       #   description: 'management group id'
       #   required: true
@@ -45,31 +46,83 @@ jobs:
               working-directory: azapi_mgmt_grp
               run: terraform init
 
-            - name: Terraform Import
+            - name: Discover & Import All Management Groups
               working-directory: azapi_mgmt_grp
               env:
                 resource_name: ${{ github.event.inputs.ResourceBlockName }}
-                import_map:    ${{ github.event.inputs.ImportMap }}
                 api_version:   "2021-04-01"
               run: |
                 set -euo pipefail
                 set -f
 
-                echo "Importing azapi_resource.${resource_name}"
+                echo "Listing management groups visible to the service principal..."
+                mgs_json=$(az account management-group list --output json)
 
-                echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
-                while read -r key mg_id; do
-                  addr="azapi_resource.${resource_name}[\"${key}\"]"
+                echo "$mgs_json" | jq -r '.[] | "  - \(.name)\t\(.displayName)"'
+                echo ""
+
+                mg_names=$(echo "$mgs_json" | jq -r '.[].name')
+
+                if [[ -z "$mg_names" ]]; then
+                  echo "No management groups to import."
+                  exit 0
+                fi
+
+                fail_count=0
+                skip_count=0
+                ok_count=0
+
+                while read -r mg_id; do
+                  [[ -z "$mg_id" ]] && continue
+                  addr="azapi_resource.${resource_name}[\"${mg_id}\"]"
                   id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
-                  echo "----------------------------------------------"
-                  echo "Importing $addr  <=  $id"
-                  if terraform state show "$addr" >/dev/null 2>&1; then
-                    echo "Already in state, skipping."
-                  else
-                    terraform import -- "$addr" "$id"
-                  fi
-                done
 
+                  echo "----------------------------------------------"
+                  echo "Importing $addr"
+                  echo "        <= $id"
+
+                  if terraform state show "$addr" >/dev/null 2>&1; then
+                    echo "  Already in state, skipping."
+                    skip_count=$((skip_count+1))
+                    continue
+                  fi
+
+                  if terraform import -- "$addr" "$id"; then
+                    ok_count=$((ok_count+1))
+                  else
+                    echo "  ❌ Import failed for $mg_id"
+                    fail_count=$((fail_count+1))
+                  fi
+                done <<< "$mg_names"
+
+                echo "=============================================="
+                echo "Imported: $ok_count  Skipped: $skip_count  Failed: $fail_count"
+                [[ $fail_count -eq 0 ]]
+
+            # - name: Terraform Import
+            #   working-directory: azapi_mgmt_grp
+            #   env:
+            #     resource_name: ${{ github.event.inputs.ResourceBlockName }}
+            #     import_map:    ${{ github.event.inputs.ImportMap }}
+            #     api_version:   "2021-04-01"
+            #   run: |
+            #     set -euo pipefail
+            #     set -f
+
+            #     echo "Importing azapi_resource.${resource_name}"
+
+            #     echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
+            #     while read -r key mg_id; do
+            #       addr="azapi_resource.${resource_name}[\"${key}\"]"
+            #       id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
+            #       echo "----------------------------------------------"
+            #       echo "Importing $addr  <=  $id"
+            #       if terraform state show "$addr" >/dev/null 2>&1; then
+            #         echo "Already in state, skipping."
+            #       else
+            #         terraform import -- "$addr" "$id"
+            #       fi
+            #     done
             - name: Terraform Plan
               working-directory: azapi_mgmt_grp
               run: terraform plan

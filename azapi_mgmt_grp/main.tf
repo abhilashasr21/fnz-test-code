@@ -39,7 +39,7 @@ resource "azapi_resource" "management_group_child2" {
       displayName = each.value.display_name
       details = {
         parent = {
-          id = azapi_resource.management_group_parent.id
+          id = each.value.parent_id != null ? ("/providers/Microsoft.Management/managementGroups/${each.value.parent_id}") : azapi_resource.management_group_parent.id
         }
       }
     }

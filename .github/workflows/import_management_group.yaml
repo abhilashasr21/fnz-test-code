@@ -26,7 +26,7 @@ env:
     client_id: ${{secrets.AZURE_CLIENT_ID}}
 
 jobs:
-    AzureLogin:
+    ImportManagementGroup:
         runs-on: ubuntu-latest
         env:
           resource_block_name: ${{github.event.inputs.ResourceBlockName}}

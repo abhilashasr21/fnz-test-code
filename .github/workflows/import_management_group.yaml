@@ -46,7 +46,7 @@ jobs:
 
             - name: Terraform Import Management Group
               working-directory: azapi_mgmt_grp
-              run: terraform import azapi_resource.${{env.resource_block_name}} /providers/Microsoft.Management/managementGroups/${{env.management_group_id}}
+              run: terraform import 'azapi_resource.${{env.resource_block_name}}' /providers/Microsoft.Management/managementGroups/${{env.management_group_id}}
 
             - name: Terraform Plan
               working-directory: azapi_mgmt_grp

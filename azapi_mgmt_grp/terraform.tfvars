@@ -13,7 +13,7 @@ child_management_groups = {
     name         = "mg301"
     display_name = "Child 301"
   }
-  mg321 = {
+  mg311 = {
     name         = "mg311"
     display_name = "Child 311"
     parent_id    = "mg301"

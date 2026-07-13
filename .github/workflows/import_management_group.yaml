@@ -1,19 +1,15 @@
 name: Import Management Group
 on:
-    # push: 
-    #     branches: [main]
-
-    workflow_dispatch:
-        inputs:
-            ResourceBlockName:
-                description: 'resource block name'
-                required: true
-                type: string
-
-            ManagementGroupId:
-                description: 'management group id'
-                required: true
-                type: string
+  workflow_dispatch:
+    inputs:
+      ResourceBlockName:
+        description: 'resource block name'
+        required: true
+        type: string
+      ManagementGroupId:
+        description: 'management group id'
+        required: true
+        type: string
 
 permissions: 
     id-token: write   # required for OIDC

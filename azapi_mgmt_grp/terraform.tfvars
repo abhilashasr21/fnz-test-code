@@ -3,6 +3,7 @@
 child_management_groups = {
   mg111 = { name = "mg111", display_name = "Terraform Child 3 Management Group", parent_id = "mg201" }
   mg112 = { name = "mg112", display_name = "Terraform Child 2 Management Group", parent_id = "mg201" }
+  mg201 = { name = "mg201", display_name = "Terraform Parent Management Group" }
   mg202 = { name = "mg202", display_name = "Terraform Child Management Group", parent_id = "mg201" }
   mg301 = { name = "mg301", display_name = "Child 301" }
   mg311 = { name = "mg311", display_name = "Child 311", parent_id = "mg301" }

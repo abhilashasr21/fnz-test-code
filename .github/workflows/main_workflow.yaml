@@ -20,7 +20,7 @@ jobs:
 
   approval-gate:
     name: Checking approval-gate
-    needs: terraform
+    needs: lint
     env:
       tier: test
       tenant: test-tenant

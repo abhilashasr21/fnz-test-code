@@ -12,6 +12,7 @@ child_management_groups = {
   mg301 = {
     name         = "mg301"
     display_name = "Child 301"
+    parent_id    = "48d31bc6-3359-4e9d-af8b-75b9b41ebd66"
   }
   mg311 = {
     name         = "mg311"

@@ -30,7 +30,6 @@ jobs:
         runs-on: ubuntu-latest
         env:
           resource_block_name: ${{github.event.inputs.ResourceBlockName}}
-          management_group_id: ${{github.event.inputs.ManagementGroupId}}
           import_map: ${{github.event.inputs.ImportMap}}
 
         steps:
@@ -49,14 +48,14 @@ jobs:
               working-directory: azapi_mgmt_grp
               run: terraform init
 
-            - name: Terraform Import Management Group
+            - name: Terraform Import (loop over all resources)
               working-directory: azapi_mgmt_grp
               run: |
                 set -euo pipefail
-                echo "Importing resources into address: $resource_address"
+                echo "Importing resources into address: $resource_block_name"
                 echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
                 while read -r key mg_id; do
-                  addr="${resource_address}[\"${key}\"]"
+                  addr="${resource_block_name}[\"${key}\"]"
                   id="/providers/Microsoft.Management/managementGroups/${mg_id}"
                   echo "----------------------------------------------"
                   echo "Importing $addr  <=  $id"

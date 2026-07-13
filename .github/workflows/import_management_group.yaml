@@ -48,23 +48,17 @@ jobs:
             - name: Terraform Import (loop over all resources)
               working-directory: azapi_mgmt_grp
               env:
-                resource_address: ${{ github.event.inputs.ResourceBlockName }}   # e.g. azapi_resource.management_group_child2
-                import_map:       ${{ github.event.inputs.ImportMap }}
+                resource_name: ${{ github.event.inputs.ResourceBlockName }}
+                import_map:    ${{ github.event.inputs.ImportMap }}
               run: |
                 set -euo pipefail
-                set -f    # disable globbing so [ ] isn't expanded by the shell
+                set -f
 
-                echo "Importing resources into address: $resource_address"
-
-                # Basic sanity check: must contain a dot (type.name)
-                if [[ "$resource_address" != *.* ]]; then
-                  echo "ERROR: ResourceAddress must be in the form '<type>.<name>', e.g. azapi_resource.management_group_child2" >&2
-                  exit 1
-                fi
+                echo "Importing azapi_resource.${resource_name}"
 
                 echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
                 while read -r key mg_id; do
-                  addr="azapi_resource.${resource_address}[\"${key}\"]"
+                  addr="azapi_resource.${resource_name}[\"${key}\"]"
                   id="/providers/Microsoft.Management/managementGroups/${mg_id}"
                   echo "----------------------------------------------"
                   echo "Importing $addr  <=  $id"

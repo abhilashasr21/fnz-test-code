@@ -45,11 +45,12 @@ jobs:
               working-directory: azapi_mgmt_grp
               run: terraform init
 
-            - name: Terraform Import (loop over all resources)
+            - name: Terraform Import
               working-directory: azapi_mgmt_grp
               env:
                 resource_name: ${{ github.event.inputs.ResourceBlockName }}
                 import_map:    ${{ github.event.inputs.ImportMap }}
+                api_version:   "2021-04-01"
               run: |
                 set -euo pipefail
                 set -f
@@ -59,7 +60,7 @@ jobs:
                 echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
                 while read -r key mg_id; do
                   addr="azapi_resource.${resource_name}[\"${key}\"]"
-                  id="/providers/Microsoft.Management/managementGroups/${mg_id}"
+                  id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
                   echo "----------------------------------------------"
                   echo "Importing $addr  <=  $id"
                   if terraform state show "$addr" >/dev/null 2>&1; then

@@ -135,7 +135,7 @@ jobs:
               working-directory: azapi_mgmt_grp
               run: terraform plan
 
-            # - name: Terraform Apply
-            #   working-directory: azapi_mgmt_grp
-            #   run: terraform apply -auto-approve
+            - name: Terraform Apply
+              working-directory: azapi_mgmt_grp
+              run: terraform apply -auto-approve
 

@@ -27,7 +27,7 @@ resource "azapi_resource" "management_group_child" {
   }
 }
 
-resource "azapi_resource" "management_group_children" {
+resource "azapi_resource" "management_group_child2" {
   for_each = var.child_management_groups
 
   type      = "Microsoft.Management/managementGroups@2021-04-01"

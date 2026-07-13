@@ -64,7 +64,7 @@ jobs:
 
                 echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
                 while read -r key mg_id; do
-                  addr="${resource_address}[\"${key}\"]"
+                  addr="azapi_resource.${resource_address}[\"${key}\"]"
                   id="/providers/Microsoft.Management/managementGroups/${mg_id}"
                   echo "----------------------------------------------"
                   echo "Importing $addr  <=  $id"

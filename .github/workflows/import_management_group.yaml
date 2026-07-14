@@ -129,10 +129,23 @@ jobs:
       
                   if terraform import -var-file="$tfvars_file" -- "$addr" "$id"; then
                     ok=$((ok+1))
+                    continue
                   else
                     echo "  ❌ Import failed for $mg_id"
                     fail=$((fail+1))
+                    continue
                   fi
+
+                  if [[ $fail -gt 0 ]]; then
+                    echo "  ❌ Import failed for $mg_id"
+                    fail=$((fail+1))
+                    exit 1
+                  else
+                    echo "  ✅ Import succeeded for $mg_id"
+                    ok=$((ok+1))
+                  fi
+
+
                 done <<< "$mg_names"
       
                 echo "=============================================="

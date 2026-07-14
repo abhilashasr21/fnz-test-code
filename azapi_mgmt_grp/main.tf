@@ -31,16 +31,18 @@ resource "azapi_resource" "this" {
   for_each  = var.management_groups
   type      = "Microsoft.Management/managementGroups@2021-04-01"
   name      = each.value.name
-  parent_id = "/providers/Microsoft.Management/managementGroups/mg501"
+  parent_id = "/"
+
   body = {
-    properties = {
-      displayName = each.value.display_name
-      details = {
-        parent = {
-          id = each.value.parent_id != null ? ("/providers/Microsoft.Management/managementGroups/${each.value.parent_id}") : null
+    properties = merge(
+      { displayName = each.value.display_name },
+      each.value.parent_id != null ? {
+        details = {
+          parent = {
+            id = "/providers/Microsoft.Management/managementGroups/${each.value.parent_id}"
+          }
         }
-      }
-    }
+      } : {}
+    )
   }
 }
-

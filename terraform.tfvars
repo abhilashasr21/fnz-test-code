@@ -1,2 +1,2 @@
-location = "eastus"
-app_name = "test01"
+# location = "eastus"
+# app_name = "test01"

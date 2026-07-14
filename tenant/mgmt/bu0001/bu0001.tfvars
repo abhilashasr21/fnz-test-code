@@ -10,5 +10,6 @@ management_groups = {
   mg401 = { name = "mg401", display_name = "Child 401", parent_id = "mg202" }
   mg402 = { name = "mg402", display_name = "Child 402", parent_id = "mg202" }
   mg403 = { name = "mg403", display_name = "Child 403", parent_id = "mg202" }
-  mg501 = { name = "mg501", display_name = "Child 501", parent_id = "mg201"}
+  mg501 = { name = "mg501", display_name = "Child 501", parent_id = "mg201" }
+  mg521 = { name = "mg521", display_name = "Child 521" }
 }

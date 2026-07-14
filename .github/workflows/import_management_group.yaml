@@ -16,11 +16,11 @@ on:
       #   description: 'management group id'
       #   required: true
       #   type: string
-      ImportMap:
-        description: 'JSON map of {"each_key":"management_group_id"} pairs. Example: {"mg1":"myMg1","mg2":"myMg2"}'
-        required: false
-        type: string
-        default: '{"mg1":"myMg1","mg2":"myMg2"}'
+      # ImportMap:
+      #   description: 'JSON map of {"each_key":"management_group_id"} pairs. Example: {"mg1":"myMg1","mg2":"myMg2"}'
+      #   required: false
+      #   type: string
+      #   default: '{"mg1":"myMg1","mg2":"myMg2"}'
       tenantname:
         description: 'Path to the tfvars file, relative to repo root'
         required: true

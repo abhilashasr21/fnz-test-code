@@ -72,7 +72,7 @@
 # }
 
 module "management_group_child2" {
-  source = "./Module/managementgroup"
-  name = "mg501"
+  source       = "./Module/managementgroup"
+  name         = "mg501"
   display_name = "Child 05"
 }

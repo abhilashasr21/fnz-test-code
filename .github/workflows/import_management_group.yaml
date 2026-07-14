@@ -37,7 +37,7 @@ env:
     subscription_id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     client_id: ${{secrets.AZURE_CLIENT_ID}}
     TF_WORKDIR: managementgroups
-    tfvars: ../tenant/mgmt/${{inputs.tenantname}}/${{inputs.tenantname}}.tfvars
+    tfvars: tenant/mgmt/${{inputs.tenantname}}/${{inputs.tenantname}}.tfvars
 
 jobs:
     ImportManagementGroup:
@@ -61,7 +61,7 @@ jobs:
               run: |
                 set -euo pipefail
                 # Absolute path to the tfvars file (unambiguous for terraform, awk, etc.)
-                tfvars_abs="${GITHUB_WORKSPACE}/${{env.tfvars }}"
+                tfvars_abs="${GITHUB_WORKSPACE}/${{env.tfvars}}"
                 if [[ ! -f "$tfvars_abs" ]]; then
                   echo "❌ tfvars file not found: $tfvars_abs" >&2
                   exit 1

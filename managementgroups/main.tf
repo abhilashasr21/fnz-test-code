@@ -72,6 +72,6 @@
 # }
 
 module "management_group_child2" {
-  source       = "./azapi_mgmt_grp"
+  source       = "../azapi_mgmt_grp"
   management_groups = var.management_groups
 }

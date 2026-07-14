@@ -12,16 +12,19 @@ on:
         required: false
         type: boolean
         default: true
-      # ManagementGroupId:
-      #   description: 'management group id'
-      #   if: ${{ github.event.inputs.ImportAll == 'false' }}
-      #   required: true
-      #   type: string
-      # ImportMap:
-      #   description: 'JSON map of {"each_key":"management_group_id"} pairs. Example: {"mg1":"myMg1","mg2":"myMg2"}'
-      #   if: ${{ github.event.inputs.ImportAll == 'false' }}
-      #   required: true
-      #   type: string
+      ManagementGroupId:
+        description: 'management group id'
+        required: true
+        type: string
+      ImportMap:
+        description: 'JSON map of {"each_key":"management_group_id"} pairs. Example: {"mg1":"myMg1","mg2":"myMg2"}'
+        required: true
+        type: string
+      TfvarsFile:
+        description: 'Path to the tfvars file, relative to repo root'
+        required: true
+        type: string
+        default: 'tenant/mgmt/bu0001/bu0001.tfvars'
 
 permissions: 
     id-token: write   # required for OIDC
@@ -32,11 +35,11 @@ env:
     tenant_id: ${{secrets.AZURE_TENANT_ID}}
     subscription_id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     client_id: ${{secrets.AZURE_CLIENT_ID}}
+    TF_WORKDIR: azapi_mgmt_grp
 
 jobs:
     ImportManagementGroup:
         runs-on: ubuntu-latest
-
         steps:
             - name: Checkout Code
               uses: actions/checkout@v5
@@ -49,9 +52,96 @@ jobs:
                 tenant-id: ${{env.tenant_id}}
             - name: Terraform Setup
               uses: hashicorp/setup-terraform@v2
+
+            # - name: Terraform Init
+            #   working-directory: azapi_mgmt_grp
+            #   run: terraform init
+
+            - name: Resolve tfvars path
+              id: paths
+              run: |
+                set -euo pipefail
+                # Absolute path to the tfvars file (unambiguous for terraform, awk, etc.)
+                tfvars_abs="${GITHUB_WORKSPACE}/${{ github.event.inputs.TfvarsFile }}"
+                if [[ ! -f "$tfvars_abs" ]]; then
+                  echo "❌ tfvars file not found: $tfvars_abs" >&2
+                  exit 1
+                fi
+                echo "tfvars_abs=$tfvars_abs" >> "$GITHUB_OUTPUT"
+                echo "Using tfvars: $tfvars_abs"
+      
             - name: Terraform Init
-              working-directory: azapi_mgmt_grp
+              working-directory: ${{ env.TF_WORKDIR }}
               run: terraform init
+      
+            - name: Discover & Import All Management Groups
+              working-directory: ${{ env.TF_WORKDIR }}
+              env:
+                resource_name: ${{ github.event.inputs.ResourceBlockName }}
+                api_version:   "2021-04-01"
+                tenant_id:     ${{ secrets.AZURE_TENANT_ID }}
+                tfvars_file:   ${{ steps.paths.outputs.tfvars_abs }}
+              run: |
+                set -euo pipefail
+                set -f
+      
+                echo "Listing management groups visible to the service principal..."
+                mgs_json=$(az account management-group list --output json)
+                echo "$mgs_json" | jq -r '.[] | "  - \(.name)\t\(.displayName)"'
+                echo ""
+      
+                # Extract child_management_groups keys from the tfvars file
+                configured_keys=$(awk '
+                  /child_management_groups[[:space:]]*=/ {inblock=1; next}
+                  inblock && /^[[:space:]]*}[[:space:]]*$/ {inblock=0}
+                  inblock && /=[[:space:]]*{/ {
+                    gsub(/^[[:space:]]+|[[:space:]]*=.*$/, "");
+                    gsub(/"/, "");
+                    print
+                  }
+                ' "$tfvars_file" | sort -u)
+      
+                echo "Keys configured in $tfvars_file:"
+                echo "$configured_keys" | sed 's/^/  - /'
+                echo ""
+      
+                # Exclude the Tenant Root Group
+                mg_names=$(echo "$mgs_json" | jq -r --arg t "$tenant_id" '.[] | select(.name != $t) | .name')
+      
+                ok=0; skip=0; fail=0; unconfigured=0
+      
+                while read -r mg_id; do
+                  [[ -z "$mg_id" ]] && continue
+                  echo "----------------------------------------------"
+                  id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
+                  addr="azapi_resource.${resource_name}[\"${mg_id}\"]"
+      
+                  if ! grep -qx "$mg_id" <<< "$configured_keys"; then
+                    echo "  ⚠️  $mg_id not in $tfvars_file → skipping."
+                    unconfigured=$((unconfigured+1))
+                    continue
+                  fi
+      
+                  echo "Importing $addr"
+                  echo "        <= $id"
+      
+                  if terraform state show "$addr" >/dev/null 2>&1; then
+                    echo "  Already in state, skipping."
+                    skip=$((skip+1)); continue
+                  fi
+      
+                  if terraform import -var-file="$tfvars_file" -- "$addr" "$id"; then
+                    ok=$((ok+1))
+                  else
+                    echo "  ❌ Import failed for $mg_id"
+                    fail=$((fail+1))
+                  fi
+                done <<< "$mg_names"
+      
+                echo "=============================================="
+                echo "Imported: $ok  Skipped: $skip  Not-configured: $unconfigured  Failed: $fail"
+                [[ $fail -eq 0 ]]
+      
 
             - name: Discover & Import All Management Groups
               if: ${{ github.event.inputs.ImportAll == 'true' }}

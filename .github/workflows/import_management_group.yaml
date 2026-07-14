@@ -37,7 +37,7 @@ env:
     subscription_id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     client_id: ${{secrets.AZURE_CLIENT_ID}}
     TF_WORKDIR: managementgroups
-    tfvars: tenant/mgmt/${{inputs.tenantname}}/${{inputs.tenantname}}.tfvars
+    tfvars: ../tenant/mgmt/${{inputs.tenantname}}/${{inputs.tenantname}}.tfvars
 
 jobs:
     ImportManagementGroup:

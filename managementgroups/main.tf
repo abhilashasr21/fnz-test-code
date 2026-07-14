@@ -72,7 +72,6 @@
 # }
 
 module "management_group_child2" {
-  source       = "./Module/managementgroup"
-  name         = "mg501"
-  display_name = "Child 05"
+  source       = "./azapi_mgmt_grp"
+  management_groups = var.management_groups
 }

@@ -26,13 +26,12 @@
 #     }
 #   }
 # }
-resource "azapi_resource" "management_group_child2" {
-  for_each = var.child_management_groups
 
+resource "azapi_resource" "this" {
+  for_each  = var.management_groups
   type      = "Microsoft.Management/managementGroups@2021-04-01"
   name      = each.value.name
-  parent_id = "/"
-
+  parent_id = "/providers/Microsoft.Management/managementGroups/mg501"
   body = {
     properties = {
       displayName = each.value.display_name
@@ -44,3 +43,4 @@ resource "azapi_resource" "management_group_child2" {
     }
   }
 }
+

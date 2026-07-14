@@ -1,6 +1,6 @@
 # 
 
-child_management_groups = {
+management_groups = {
   mg111 = { name = "mg111", display_name = "Terraform Child 3 Management Group", parent_id = "mg201" }
   mg112 = { name = "mg112", display_name = "Terraform Child 2 Management Group", parent_id = "mg201" }
   mg201 = { name = "mg201", display_name = "Terraform Parent Management Group", parent_id = "48d31bc6-3359-4e9d-af8b-75b9b41ebd66" }

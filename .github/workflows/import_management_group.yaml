@@ -21,11 +21,11 @@ on:
         required: false
         type: string
         default: '{"mg1":"myMg1","mg2":"myMg2"}'
-      TfvarsFile:
+      tenantname:
         description: 'Path to the tfvars file, relative to repo root'
         required: true
         type: string
-        default: 'tenant/mgmt/bu0001/bu0001.tfvars'
+        default: 'bu0001'
 
 permissions: 
     id-token: write   # required for OIDC
@@ -36,7 +36,8 @@ env:
     tenant_id: ${{secrets.AZURE_TENANT_ID}}
     subscription_id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     client_id: ${{secrets.AZURE_CLIENT_ID}}
-    TF_WORKDIR: azapi_mgmt_grp
+    TF_WORKDIR: managementgroups
+    tfvars: tenant/mgmt/${{inputs.tenantname}}/${{inputs.tenantname}}.tfvars
 
 jobs:
     ImportManagementGroup:
@@ -54,16 +55,13 @@ jobs:
             - name: Terraform Setup
               uses: hashicorp/setup-terraform@v2
 
-            # - name: Terraform Init
-            #   working-directory: azapi_mgmt_grp
-            #   run: terraform init
 
             - name: Resolve tfvars path
               id: paths
               run: |
                 set -euo pipefail
                 # Absolute path to the tfvars file (unambiguous for terraform, awk, etc.)
-                tfvars_abs="${GITHUB_WORKSPACE}/${{ github.event.inputs.TfvarsFile }}"
+                tfvars_abs="${GITHUB_WORKSPACE}/${{env.tfvars }}"
                 if [[ ! -f "$tfvars_abs" ]]; then
                   echo "❌ tfvars file not found: $tfvars_abs" >&2
                   exit 1
@@ -115,7 +113,7 @@ jobs:
                   [[ -z "$mg_id" ]] && continue
                   echo "----------------------------------------------"
                   id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
-                  addr="azapi_resource.${resource_name}[\"${mg_id}\"]"
+                  addr="module.${resource_name}.azapi_resource.this[\"${mg_id}\"]"
       
                   if ! grep -qx "$mg_id" <<< "$configured_keys"; then
                     echo "  ⚠️  $mg_id not in $tfvars_file → skipping."
@@ -197,31 +195,31 @@ jobs:
             #     echo "Imported: $ok_count  Skipped: $skip_count  Failed: $fail_count"
             #     [[ $fail_count -eq 0 ]]
 
-            - name: Terraform Import
-              if: ${{ github.event.inputs.ImportAll == 'false' }}
-              working-directory: azapi_mgmt_grp
-              env:
-                resource_name: ${{ github.event.inputs.ResourceBlockName }}
-                import_map:    ${{ github.event.inputs.ImportMap }}
-                api_version:   "2021-04-01"
-              run: |
-                set -euo pipefail
-                set -f
+            # - name: Terraform Import
+            #   if: ${{ github.event.inputs.ImportAll == 'false' }}
+            #   working-directory: azapi_mgmt_grp
+            #   env:
+            #     resource_name: ${{ github.event.inputs.ResourceBlockName }}
+            #     import_map:    ${{ github.event.inputs.ImportMap }}
+            #     api_version:   "2021-04-01"
+            #   run: |
+            #     set -euo pipefail
+            #     set -f
 
-                echo "Importing azapi_resource.${resource_name}"
+            #     echo "Importing azapi_resource.${resource_name}"
 
-                echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
-                while read -r key mg_id; do
-                  addr="azapi_resource.${resource_name}[\"${key}\"]"
-                  id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
-                  echo "----------------------------------------------"
-                  echo "Importing $addr  <=  $id"
-                  if terraform state show "$addr" >/dev/null 2>&1; then
-                    echo "Already in state, skipping."
-                  else
-                    terraform import -- "$addr" "$id"
-                  fi
-                done
+            #     echo "$import_map" | jq -r 'to_entries[] | "\(.key) \(.value)"' | \
+            #     while read -r key mg_id; do
+            #       addr="module.${resource_name}.azapi_resource.this[\"${key}\"]"
+            #       id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
+            #       echo "----------------------------------------------"
+            #       echo "Importing $addr  <=  $id"
+            #       if terraform state show "$addr" >/dev/null 2>&1; then
+            #         echo "Already in state, skipping."
+            #       else
+            #         terraform import -- "$addr" "$id"
+            #       fi
+            #     done
 
             - name: Terraform Plan
               working-directory: ${{ env.TF_WORKDIR }}

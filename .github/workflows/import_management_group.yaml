@@ -224,10 +224,10 @@ jobs:
                 done
 
             - name: Terraform Plan
-              working-directory: ${{env.TF_WORKDIR}}
-              run: terraform plan
-
+              working-directory: ${{ env.TF_WORKDIR }}
+              run: terraform plan -var-file="${{ steps.paths.outputs.tfvars_abs }}"
+        
             - name: Terraform Apply
-              working-directory: ${{env.TF_WORKDIR}}
-              run: terraform apply -auto-approve
+              working-directory: ${{ env.TF_WORKDIR }}
+              run: terraform apply -auto-approve -var-file="${{ steps.paths.outputs.tfvars_abs }}"
 

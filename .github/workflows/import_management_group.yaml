@@ -82,7 +82,7 @@ jobs:
                 resource_name: ${{ github.event.inputs.ResourceBlockName }}
                 api_version:   "2021-04-01"
                 tenant_id:     ${{ secrets.AZURE_TENANT_ID }}
-                tfvars_file:   '${GITHUB_WORKSPACE}/${{ env.tfvars }}'
+                tfvars_file:   ${{ env.tfvars }}
               run: |
                 set -euo pipefail
                 set -f
@@ -117,18 +117,20 @@ jobs:
                   echo "----------------------------------------------"
                   id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
                   addr="module.${resource_name}.azapi_resource.this[\"${mg_id}\"]"
+                  tfvarsfile="${GITHUB_WORKSPACE}/${tfvars_file}"
       
 
       
                   echo "Importing $addr"
                   echo "        <= $id"
+                  echo "Using tfvars: $tfvarsfile"
       
                   if terraform state show "$addr" >/dev/null 2>&1; then
                     echo "  Already in state, skipping."
                     skip=$((skip+1)); continue
                   fi
       
-                  if terraform import -var-file="$tfvars_file" -- "$addr" "$id"; then
+                  if terraform import -var-file="$tfvarsfile" -- "$addr" "$id"; then
                     ok=$((ok+1))
                     continue
                   else

@@ -25,7 +25,8 @@ on:
         description: 'Path to the tfvars file, relative to repo root'
         required: true
         type: string
-        default: 'tenant/mgmt/bu0001/bu0001.tfvars'
+        default: bu0001
+        # default: 'tenant/mgmt/bu0001/bu0001.tfvars'
 
 permissions: 
     id-token: write   # required for OIDC
@@ -37,7 +38,7 @@ env:
     subscription_id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     client_id: ${{secrets.AZURE_CLIENT_ID}}
     TF_WORKDIR: managementgroups
-    tfvars: ${{github.event.inputs.tenantname}}
+    tfvars: 'tenant/mgmt/${{github.event.inputs.tenantname}}/${{github.event.inputs.tenantname}}.tfvars'
 
 jobs:
     ImportManagementGroup:
@@ -137,11 +138,11 @@ jobs:
                   fi
 
                   if [[ $fail -gt 0 ]]; then
-                    echo "  ❌ Import failed for $mg_id"
+                    echo "  ❌ Import failed"
                     fail=$((fail+1))
                     exit 1
                   else
-                    echo "  ✅ Import succeeded for $mg_id"
+                    echo "  ✅ Import succeeded"
                     ok=$((ok+1))
                   fi
 

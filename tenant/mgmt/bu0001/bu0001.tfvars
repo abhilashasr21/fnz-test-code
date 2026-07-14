@@ -7,9 +7,11 @@ management_groups = {
   mg311 = { name = "mg311", display_name = "Child 311", parent_id = "mg301" }
   mg321 = { name = "mg321", display_name = "Child 321", parent_id = "mg301" }
   mg322 = { name = "mg322", display_name = "Child 322", parent_id = "mg301" }
+  mg323 = { name = "mg323", display_name = "Child 323", parent_id = "mg301" }
+  mg324 = { name = "mg324", display_name = "Child 324", parent_id = "mg301" }
   mg401 = { name = "mg401", display_name = "Child 401", parent_id = "mg202" }
   mg402 = { name = "mg402", display_name = "Child 402", parent_id = "mg202" }
   mg403 = { name = "mg403", display_name = "Child 403", parent_id = "mg202" }
   mg501 = { name = "mg501", display_name = "Child 501", parent_id = "mg201" }
-  # mg521 = { name = "mg521", display_name = "Child 521" }
+  mg521 = { name = "mg521", display_name = "Child 521" }
 }

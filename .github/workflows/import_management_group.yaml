@@ -82,7 +82,7 @@ jobs:
                 resource_name: ${{ github.event.inputs.ResourceBlockName }}
                 api_version:   "2021-04-01"
                 tenant_id:     ${{ secrets.AZURE_TENANT_ID }}
-                tfvars_file:   ${{ env.tfvars }}
+                tfvars_file:   '${GITHUB_WORKSPACE}/${{ env.tfvars }}'
               run: |
                 set -euo pipefail
                 set -f

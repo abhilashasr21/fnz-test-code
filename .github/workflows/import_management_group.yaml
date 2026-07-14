@@ -25,8 +25,7 @@ on:
         description: 'Path to the tfvars file, relative to repo root'
         required: true
         type: string
-        default: bu0001
-        # default: 'tenant/mgmt/bu0001/bu0001.tfvars'
+        default: 'tenant/mgmt/bu0001/bu0001.tfvars'
 
 permissions: 
     id-token: write   # required for OIDC
@@ -38,7 +37,7 @@ env:
     subscription_id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     client_id: ${{secrets.AZURE_CLIENT_ID}}
     TF_WORKDIR: managementgroups
-    tfvars: 'tenant/mgmt/${{github.event.inputs.tenantname}}/${{github.event.inputs.tenantname}}.tfvars'
+    tfvars: ${{github.event.inputs.tenantname}}
 
 jobs:
     ImportManagementGroup:
@@ -82,7 +81,7 @@ jobs:
                 resource_name: ${{ github.event.inputs.ResourceBlockName }}
                 api_version:   "2021-04-01"
                 tenant_id:     ${{ secrets.AZURE_TENANT_ID }}
-                tfvars_file:   ${{ env.tfvars }}
+                tfvars_file:   ${{ steps.paths.outputs.tfvars_abs }}
               run: |
                 set -euo pipefail
                 set -f
@@ -117,20 +116,18 @@ jobs:
                   echo "----------------------------------------------"
                   id="/providers/Microsoft.Management/managementGroups/${mg_id}?api-version=${api_version}"
                   addr="module.${resource_name}.azapi_resource.this[\"${mg_id}\"]"
-                  tfvarsfile="${GITHUB_WORKSPACE}/${tfvars_file}"
       
 
       
                   echo "Importing $addr"
                   echo "        <= $id"
-                  echo "Using tfvars: $tfvarsfile"
       
                   if terraform state show "$addr" >/dev/null 2>&1; then
                     echo "  Already in state, skipping."
                     skip=$((skip+1)); continue
                   fi
       
-                  if terraform import -var-file="$tfvarsfile" -- "$addr" "$id"; then
+                  if terraform import -var-file="$tfvars_file" -- "$addr" "$id"; then
                     ok=$((ok+1))
                     continue
                   else

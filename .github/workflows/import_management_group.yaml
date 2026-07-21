@@ -85,6 +85,7 @@ jobs:
               run: |
                 set -euo pipefail
                 set -f
+                az config set extension.dynamic_install_allow_preview=true
       
                 echo "Listing management groups visible to the service principal..."
                 mgs_json=$(az account management-group list --output json)
@@ -94,7 +95,7 @@ jobs:
 
                 echo "Subscription List visible to the service principal:"
                 subscription_list=$(az account subscription list --output json)
-                
+
                 echo "$subscription_list" | jq -r '.[] | "  - \(.subscriptionId)\t\(.displayName)"'
                 echo ""
       

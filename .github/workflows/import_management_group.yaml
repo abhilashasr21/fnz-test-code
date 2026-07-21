@@ -88,7 +88,14 @@ jobs:
       
                 echo "Listing management groups visible to the service principal..."
                 mgs_json=$(az account management-group list --output json)
+
                 echo "$mgs_json" | jq -r '.[] | "  - \(.name)\t\(.displayName)"'
+                echo ""
+
+                echo "Subscription List visible to the service principal:"
+                subscription_list=$(az account subscription list --output json)
+                
+                echo "$subscription_list" | jq -r '.[] | "  - \(.subscriptionId)\t\(.displayName)"'
                 echo ""
       
                 # Extract child_management_groups keys from the tfvars file

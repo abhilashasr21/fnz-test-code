@@ -2,11 +2,16 @@ name: Import Management Group
 on:
   workflow_dispatch:
     inputs:
-      ResourceBlockName:
+      ManagementResourceBlockName:
         description: 'resource block name'
         required: false
         type: string
         default: 'management_group_child2'
+      SubscriptionResourceBlockName:
+        description: 'resource block name'
+        required: false
+        type: string
+        default: 'subscription'
       ImportAll:
         description: 'import all management groups visible to the service principal'
         required: false
@@ -67,7 +72,7 @@ jobs:
                   echo "❌ tfvars file not found: $tfvars_abs" >&2
                   exit 1
                 fi
-
+                echo ""
                 echo "tfvars_abs=$tfvars_abs" >> "$GITHUB_OUTPUT"
                 echo "Using tfvars: $tfvars_abs"
       
@@ -78,7 +83,8 @@ jobs:
             - name: Discover & Import All Management Groups
               working-directory: ${{ env.TF_WORKDIR }}
               env:
-                resource_name: ${{ github.event.inputs.ResourceBlockName }}
+                resource_name: ${{ github.event.inputs.ManagementResourceBlockName }}
+                subscription_resource_name: ${{ github.event.inputs.SubscriptionResourceBlockName }}
                 api_version:   "2021-04-01"
                 tenant_id:     ${{ secrets.AZURE_TENANT_ID }}
                 tfvars_file:   ${{ steps.paths.outputs.tfvars_abs }}
@@ -108,11 +114,26 @@ jobs:
                     print
                   }
                 ' "$tfvars_file" | sort -u)
-      
+                echo ""
                 echo "Keys configured in $tfvars_file:"
                 echo "$configured_keys" | sed 's/^/  - /'
                 echo ""
-      
+                
+                # Extract subscription keys from the tfvars file
+                configured_subscription_keys=$(awk '
+                  /subscriptions[[:space:]]*=/ {inblock=1; next}
+                  inblock && /^[[:space:]]*}[[:space:]]*$/ {inblock=0}
+                  inblock && /=[[:space:]]*{/ {
+                    gsub(/^[[:space:]]+|[[:space:]]*=.*$/, "");
+                    gsub(/"/, "");
+                    print
+                  }
+                ' "$tfvars_file" | sort -u)
+                echo ""
+                echo "Subscription keys configured in $tfvars_file:"
+                echo "$configured_subscription_keys" | sed 's/^/  - /'
+                echo ""
+
                 # Exclude the Tenant Root Group
                 mg_names=$(echo "$mgs_json" | jq -r --arg t "$tenant_id" '.[] | select(.name != $t) | .name')
       

@@ -15,3 +15,7 @@ management_groups = {
   mg501 = { name = "mg501", display_name = "Child 501", parent_id = "mg201" }
   mg521 = { name = "mg521", display_name = "Child 521" }
 }
+
+subscription = {
+  enrollment_account_id = "/providers/Microsoft.Billing/billingAccounts/REPLACE/enrollmentAccounts/REPLACE"
+}

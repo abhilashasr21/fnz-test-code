@@ -99,7 +99,7 @@ jobs:
                 echo ""
 
                 echo "Subscription List visible to the service principal:"
-                subscription_list=$(az account list --all --output json)
+                subscription_list=$(az account subscription list --output json)
 
                 echo "$subscription_list" | jq -r '.[] | "  - \(.id)\t\(.name)"'
                 echo ""

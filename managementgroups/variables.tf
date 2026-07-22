@@ -26,3 +26,41 @@ variable "management_groups" {
   }))
   default = {}
 }
+
+variable "subscription_name" {
+  type = string
+  default = "Visual Studio Enterprise Subscription"
+}
+
+variable "subscription_display_name" {
+  type = string
+  default = "Visual Studio Enterprise Subscription"
+}
+
+variable "subscription_workload" {
+  type = string
+  default = "Production"
+}
+
+variable "enrollment_account_id" {
+  type = string
+}
+
+variable "management_group_id" {
+  type = string
+}
+
+variable "workload" {
+  type = string
+  default = "Production"
+}
+
+variable "tags" {
+  type = map(string)
+  default = {}
+}
+
+variable "resource_providers" {
+  type = list(string)
+  default = []
+}

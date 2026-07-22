@@ -75,3 +75,14 @@ module "management_group_child2" {
   source       = "../azapi_mgmt_grp"
   management_groups = var.management_groups
 }
+
+module "subscription" {
+  source = "../Module/subscription"
+  name   = var.subscription_name
+  displayName = var.subscription_display_name
+  enrollment_account_id = var.enrollment_account_id
+  managementGroupId = var.management_group_id
+  workload = var.workload
+  tags = var.tags
+  resource_providers = var.resource_providers
+}

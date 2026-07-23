@@ -9,7 +9,7 @@ terraform {
     resource_group_name  = "tfsttaate"
     storage_account_name = "tfstatemgmtimporttest"
     container_name       = "container"
-    key                  = "moduletest.tfstate"
+    key                  = "network.tfstate"
     use_azuread_auth     = true
   }
 }

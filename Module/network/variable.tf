@@ -35,6 +35,17 @@ variable "subnets" {
       source_address_prefix      = string
       destination_address_prefix = string
     }))
+    # Optional route table for this subnet
+    route_table = optional(object({
+      name                          = string
+      bgp_route_propagation_enabled = optional(bool, true)
+      routes = list(object({
+        name                   = string
+        address_prefix         = string
+        next_hop_type          = string
+        next_hop_in_ip_address = optional(string)
+      }))
+    }))
   }))
   default = {}
 }
